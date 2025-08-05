@@ -53,7 +53,7 @@ async function initializeDatabase() {
       )
     `)
 
-    // 2. Teams table (no dependencies)
+
     await client.query(`
       CREATE TABLE IF NOT EXISTS teams (
         id SERIAL PRIMARY KEY,

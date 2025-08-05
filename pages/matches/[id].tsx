@@ -387,7 +387,6 @@ export default function MatchDetailsPage() {
 
   const handleStakeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    // Allow empty string or valid decimal numbers with up to 2 decimal places
     if (value === "" || /^\d*\.?\d{0,2}$/.test(value)) {
       setStakeAmount(value)
     }
@@ -596,457 +595,434 @@ export default function MatchDetailsPage() {
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
-          <div className="xl:col-span-3 space-y-8">
-            <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl">
-              <CardContent className="p-8">
-                <div className="space-y-8">
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl">
-                      <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center shadow-lg">
-                          <span className="font-bold text-2xl text-white">{match.home_team?.charAt(0) || "H"}</span>
-                        </div>
-                        <div>
-                          <h2 className="text-2xl font-bold text-gray-900">{match.home_team || "Home Team"}</h2>
-                          <p className="text-blue-600 font-medium">Home</p>
-                        </div>
-                      </div>
-                      {match.home_score !== undefined && (
-                        <div className="text-6xl font-bold text-blue-600">{match.home_score}</div>
-                      )}
-                    </div>
+<div className="xl:col-span-3 space-y-6">
+  {/* Match Summary Card */}
+  <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-md">
+    <CardContent className="p-4 sm:p-6">
+      <div className="space-y-6">
+        {/* Home Team */}
+        <div className="flex items-center justify-between p-4 sm:p-5 bg-blue-50 rounded-xl">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center shadow">
+              <span className="font-semibold text-lg text-white">{match.home_team?.charAt(0) || "H"}</span>
+            </div>
+            <div>
+              <h2 className="text-base sm:text-xl font-semibold text-gray-900">{match.home_team || "Home Team"}</h2>
+              <p className="text-sm text-blue-600 font-medium">Home</p>
+            </div>
+          </div>
+          {match.home_score !== undefined && (
+            <div className="text-3xl sm:text-4xl font-bold text-blue-600">{match.home_score}</div>
+          )}
+        </div>
 
-                    {/* VS Divider */}
-                    <div className="flex items-center justify-center py-4">
-                      <div className="flex items-center gap-4">
-                        <div className="w-20 h-px bg-gradient-to-r from-transparent to-gray-300" />
-                        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full font-bold text-lg shadow-lg">
-                          VS
-                        </div>
-                        <div className="w-20 h-px bg-gradient-to-l from-transparent to-gray-300" />
-                      </div>
-                    </div>
+        {/* VS Divider */}
+        <div className="flex items-center justify-center py-2">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-px bg-gray-300" />
+            <div className="bg-blue-600 text-white px-4 py-1.5 rounded-full text-sm font-semibold shadow">VS</div>
+            <div className="w-12 h-px bg-gray-300" />
+          </div>
+        </div>
 
-                    {/* Away Team */}
-                    <div className="flex items-center justify-between p-6 bg-gradient-to-r from-red-50 to-red-100 rounded-2xl">
-                      <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
-                          <span className="font-bold text-2xl text-white">{match.away_team?.charAt(0) || "A"}</span>
-                        </div>
-                        <div>
-                          <h2 className="text-2xl font-bold text-gray-900">{match.away_team || "Away Team"}</h2>
-                          <p className="text-red-600 font-medium">Away</p>
-                        </div>
-                      </div>
-                      {match.away_score !== undefined && (
-                        <div className="text-6xl font-bold text-red-600">{match.away_score}</div>
-                      )}
-                    </div>
-                  </div>
+        {/* Away Team */}
+        <div className="flex items-center justify-between p-4 sm:p-5 bg-red-50 rounded-xl">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center shadow">
+              <span className="font-semibold text-lg text-white">{match.away_team?.charAt(0) || "A"}</span>
+            </div>
+            <div>
+              <h2 className="text-base sm:text-xl font-semibold text-gray-900">{match.away_team || "Away Team"}</h2>
+              <p className="text-sm text-red-600 font-medium">Away</p>
+            </div>
+          </div>
+          {match.away_score !== undefined && (
+            <div className="text-3xl sm:text-4xl font-bold text-red-600">{match.away_score}</div>
+          )}
+        </div>
 
-                  {/* Match Info */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-gray-200">
-                    <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                      <Calendar className="h-5 w-5 text-blue-600" />
-                      <div>
-                        <p className="text-sm text-gray-600">Match Date</p>
-                        <p className="font-semibold text-gray-900">{formatMatchDate(match.match_date)}</p>
-                      </div>
-                    </div>
+        {/* Match Info */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+          <MatchInfoItem icon={<Calendar className="h-4 w-4 text-blue-600" />} label="Match Date" value={formatMatchDate(match.match_date)} />
+          {match.venue && <MatchInfoItem icon={<MapPin className="h-4 w-4 text-green-600" />} label="Venue" value={match.venue} />}
+          {match.referee && <MatchInfoItem icon={<Users className="h-4 w-4 text-purple-600" />} label="Referee" value={match.referee} />}
+          {match.prediction_count && (
+            <MatchInfoItem icon={<TrendingUp className="h-4 w-4 text-orange-600" />} label="Predictions" value={`${match.prediction_count} bets placed`} />
+          )}
+        </div>
+      </div>
+    </CardContent>
+  </Card>
 
-                    {match.venue && (
-                      <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                        <MapPin className="h-5 w-5 text-green-600" />
-                        <div>
-                          <p className="text-sm text-gray-600">Venue</p>
-                          <p className="font-semibold text-gray-900">{match.venue}</p>
-                        </div>
-                      </div>
-                    )}
+  {/* Betting Odds */}
+  {(match.odds_home || match.odds_draw || match.odds_away) && (
+    <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-md">
+      <CardHeader className="pb-1 px-4 sm:px-6 pt-4">
+        <CardTitle className="flex items-center gap-2 text-base font-semibold">
+          <Trophy className="h-4 w-4 text-yellow-600" />
+          Betting Odds
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="px-4 pb-4 sm:px-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Home */}
+          <OddsBox
+            label="Home"
+            value={match.odds_home}
+            color="blue"
+            team={match.home_team}
+          />
+          {/* Draw */}
+          <OddsBox
+            label="Draw"
+            value={match.odds_draw}
+            color="yellow"
+            team="Tie Game"
+          />
+          {/* Away */}
+          <OddsBox
+            label="Away"
+            value={match.odds_away}
+            color="red"
+            team={match.away_team}
+          />
+        </div>
+      </CardContent>
+    </Card>
+  )}
+</div>
 
-                    {match.referee && (
-                      <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                        <Users className="h-5 w-5 text-purple-600" />
-                        <div>
-                          <p className="text-sm text-gray-600">Referee</p>
-                          <p className="font-semibold text-gray-900">{match.referee}</p>
-                        </div>
-                      </div>
-                    )}
 
-                    {match.prediction_count && (
-                      <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                        <TrendingUp className="h-5 w-5 text-orange-600" />
-                        <div>
-                          <p className="text-sm text-gray-600">Predictions</p>
-                          <p className="font-semibold text-gray-900">{match.prediction_count} bets placed</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+<div className="space-y-8">
+  {/* Existing Prediction Card */}
+  {hasExistingPrediction && existingPrediction && user && isAuthenticated() && (
+    <Card className="bg-white shadow-xl border border-purple-200 rounded-2xl">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-lg font-bold text-purple-700">
+          <Eye className="h-5 w-5" />
+          Your Prediction Summary
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-5">
+        <div className="bg-purple-50 p-4 rounded-xl space-y-4">
+          <div className="flex justify-between items-center text-sm">
+            <span className="text-gray-600 font-medium">Prediction:</span>
+            <Badge className={`${getPredictionStatusColor(existingPrediction.status)} border`}>
+              <div className="flex items-center gap-1">
+                {getPredictionStatusIcon(existingPrediction.status)}
+                {existingPrediction.status}
+              </div>
+            </Badge>
+          </div>
+          <div className="space-y-2 text-sm">
+            <InfoRow label="Bet Type" value={getPredictionTypeDisplay(existingPrediction.prediction_type).label} color={getPredictionTypeDisplay(existingPrediction.prediction_type).color} />
+            <InfoRow label="Stake Amount" value={`$${Number(existingPrediction.stake_amount).toFixed(2)}`} />
+            <InfoRow label="Potential Winnings" value={`$${Number(existingPrediction.potential_winnings).toFixed(2)}`} highlight="green" />
+            <InfoRow
+              label="Total Return"
+              value={`$${(
+                Number(existingPrediction.potential_winnings) + Number(existingPrediction.stake_amount)
+              ).toFixed(2)}`}
+              bold
+              highlight="purple"
+            />
+          </div>
+        </div>
+        <p className="text-center text-sm text-gray-500">
+          Placed on {format(new Date(existingPrediction.created_at), "PPP 'at' HH:mm")}
+        </p>
+        <Button asChild variant="outline" className="w-full border-purple-200 hover:bg-purple-100">
+          <Link href="/predictions">View All Predictions</Link>
+        </Button>
+      </CardContent>
+    </Card>
+  )}
 
-            {(match.odds_home || match.odds_draw || match.odds_away) && (
-              <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-3 text-2xl">
-                    <Trophy className="h-6 w-6 text-yellow-600" />
-                    Betting Odds
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-3 gap-6">
-                    <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200">
-                      <p className="text-sm font-medium text-blue-600 mb-2">Home Win</p>
-                      <p className="text-3xl font-bold text-blue-700 mb-1">{match.odds_home || "N/A"}</p>
-                      <p className="text-sm text-blue-600 truncate">{match.home_team}</p>
-                    </div>
-                    <div className="text-center p-6 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl border border-yellow-200">
-                      <p className="text-sm font-medium text-yellow-600 mb-2">Draw</p>
-                      <p className="text-3xl font-bold text-yellow-700 mb-1">{match.odds_draw || "N/A"}</p>
-                      <p className="text-sm text-yellow-600">Tie Game</p>
-                    </div>
-                    <div className="text-center p-6 bg-gradient-to-br from-red-50 to-red-100 rounded-2xl border border-red-200">
-                      <p className="text-sm font-medium text-red-600 mb-2">Away Win</p>
-                      <p className="text-3xl font-bold text-red-700 mb-1">{match.odds_away || "N/A"}</p>
-                      <p className="text-sm text-red-600 truncate">{match.away_team}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+  {/* Place Bet Section */}
+  {canBet && user && isAuthenticated() && !hasExistingPrediction && !isPredictionLoading && (
+    <Card className="bg-white shadow-xl border border-green-200 rounded-2xl">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-lg font-bold text-green-700">
+          <Target className="h-5 w-5" />
+          Place Your Bet
+        </CardTitle>
+        <div className="mt-4 p-4 bg-green-50 rounded-xl flex items-center justify-between text-sm">
+          <div className="flex items-center gap-2 text-gray-700 font-medium">
+            <Wallet className="h-5 w-5 text-green-600" />
+            Balance:
+          </div>
+          <div className="flex items-center gap-2">
+            {loading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-green-600" />
+            ) : (
+              <>
+                <span className="text-xl font-bold text-green-600">${balance.toFixed(2)}</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="hover:bg-green-100 h-8 w-8 p-0"
+                  onClick={refreshBalance}
+                  disabled={loading}
+                >
+                  <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+                </Button>
+              </>
             )}
           </div>
-
-          <div className="space-y-6">
-            {hasExistingPrediction && existingPrediction && user && isAuthenticated() && (
-              <Card className="bg-gradient-to-br from-purple-50 to-indigo-100 border-0 shadow-xl">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-2 text-xl">
-                    <Eye className="h-5 w-5 text-purple-600" />
-                    Your Prediction
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="p-4 bg-white/70 rounded-xl border border-purple-200">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm font-medium text-gray-600">Prediction:</span>
-                      <Badge className={`${getPredictionStatusColor(existingPrediction.status)} border`}>
-                        <div className="flex items-center gap-1">
-                          {getPredictionStatusIcon(existingPrediction.status)}
-                          {existingPrediction.status}
-                        </div>
-                      </Badge>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Bet Type:</span>
-                        <span
-                          className={`font-semibold ${
-                            getPredictionTypeDisplay(existingPrediction.prediction_type).color
-                          }`}
-                        >
-                          {getPredictionTypeDisplay(existingPrediction.prediction_type).label}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Stake Amount:</span>
-                        <span className="font-semibold text-gray-900">
-                          ${Number(existingPrediction.stake_amount).toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Potential Winnings:</span>
-                        <span className="font-semibold text-green-600">
-                          ${Number(existingPrediction.potential_winnings).toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center pt-2 border-t border-purple-200">
-                        <span className="text-sm font-medium text-gray-700">Total Return:</span>
-                        <span className="font-bold text-lg text-purple-700">
-                          $
-                          {(
-                            Number(existingPrediction.potential_winnings) + Number(existingPrediction.stake_amount)
-                          ).toFixed(2)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-center text-sm text-gray-600">
-                    <p>Placed on {format(new Date(existingPrediction.created_at), "PPP 'at' HH:mm")}</p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    className="w-full border-2 border-purple-200 hover:bg-purple-50 bg-transparent"
-                    asChild
-                  >
-                    <Link href="/predictions">View All Predictions</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-
-            {canBet && user && isAuthenticated() && !hasExistingPrediction && !isPredictionLoading && (
-              <Card className="bg-gradient-to-br from-green-50 to-emerald-100 border-0 shadow-xl">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-2 text-xl">
-                    <Target className="h-5 w-5 text-green-600" />
-                    Place Your Bet
-                  </CardTitle>
-                  <div className="flex items-center justify-between p-4 bg-white/70 rounded-xl">
-                    <div className="flex items-center gap-2">
-                      <Wallet className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-medium text-gray-700">Balance:</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {loading ? (
-                        <Loader2 className="h-4 w-4 animate-spin text-green-600" />
-                      ) : (
-                        <>
-                          <p className="font-bold text-2xl text-green-600">${balance.toFixed(2)}</p>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={refreshBalance}
-                            className="h-8 w-8 p-0 hover:bg-green-100"
-                            disabled={loading}
-                          >
-                            <RefreshCw className={`h-4 w-4 text-green-600 ${loading ? "animate-spin" : ""}`} />
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div>
-                    <Label htmlFor="prediction-type" className="text-base font-semibold text-gray-700 mb-3 block">
-                      Choose Your Prediction
-                    </Label>
-                    <Select value={predictionType} onValueChange={handlePredictionTypeChange}>
-                      <SelectTrigger className="h-12 bg-white/70 border-2 border-green-200 focus:border-green-400">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="HOME" className="py-3">
-                          <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                            {match.home_team} Win
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="DRAW" className="py-3">
-                          <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                            Draw
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="AWAY" className="py-3">
-                          <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                            {match.away_team} Win
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="stake-amount" className="text-base font-semibold text-gray-700 mb-3 block">
-                      Stake Amount ($0.01 - $10,000)
-                    </Label>
-                    <div className="relative">
-                      <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
-                      <Input
-                        id="stake-amount"
-                        type="text"
-                        value={stakeAmount}
-                        onChange={handleStakeChange}
-                        placeholder="0.00"
-                        className="h-12 pl-10 bg-white/70 border-2 border-green-200 focus:border-green-400 text-lg font-semibold"
-                        max={Math.min(balance, 10000)}
-                        min={0.01}
-                      />
-                    </div>
-                    {stakeAmount && Number.parseFloat(stakeAmount) > balance && (
-                      <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        Insufficient balance
-                      </p>
-                    )}
-                    {stakeAmount &&
-                      (Number.parseFloat(stakeAmount) < 0.01 || Number.parseFloat(stakeAmount) > 10000) && (
-                        <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
-                          <Clock className="h-4 w-4" />
-                          Amount must be between $0.01 and $10,000
-                        </p>
-                      )}
-                  </div>
-
-                  {stakeAmount &&
-                    Number.parseFloat(stakeAmount) > 0 &&
-                    Number.parseFloat(stakeAmount) >= 0.01 &&
-                    Number.parseFloat(stakeAmount) <= 10000 && (
-                      <div className="p-4 bg-gradient-to-r from-green-100 to-emerald-100 rounded-xl border border-green-200">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm font-medium text-gray-700">Potential Winnings:</span>
-                          <span className="font-bold text-xl text-green-700">
-                            ${calculatePotentialWinnings().toFixed(2)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center mt-2 text-sm text-gray-600">
-                          <span>Total Return:</span>
-                          <span className="font-semibold">
-                            ${(calculatePotentialWinnings() + Number.parseFloat(stakeAmount)).toFixed(2)}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
-                  <Button
-                    className={`w-full h-12 text-lg font-semibold ${getPredictionTypeColor(
-                      predictionType,
-                    )} text-white shadow-lg hover:shadow-xl transition-all duration-200`}
-                    onClick={handlePlaceBet}
-                    disabled={
-                      isPlacingBet ||
-                      !stakeAmount ||
-                      Number.parseFloat(stakeAmount) <= 0 ||
-                      Number.parseFloat(stakeAmount) < 0.01 ||
-                      Number.parseFloat(stakeAmount) > 10000 ||
-                      Number.parseFloat(stakeAmount) > balance ||
-                      loading
-                    }
-                  >
-                    {isPlacingBet ? (
-                      <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        Placing Bet...
-                      </>
-                    ) : (
-                      <>
-                        <Target className="mr-2 h-5 w-5" />
-                        Place Bet
-                      </>
-                    )}
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Loading existing prediction */}
-            {canBet && user && isAuthenticated() && isPredictionLoading && (
-              <Card className="bg-gradient-to-br from-gray-50 to-gray-100 border-0 shadow-xl">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-center">
-                    <Loader2 className="h-8 w-8 animate-spin text-gray-600" />
-                    <span className="ml-2 text-gray-600">Checking existing predictions...</span>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Login prompt for unauthenticated users */}
-            {canBet && (!user || !isAuthenticated()) && (
-              <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 border-0 shadow-xl">
-                <CardHeader>
-                  <CardTitle className="text-xl text-center flex items-center justify-center gap-2">
-                    <LogIn className="h-5 w-5 text-blue-600" />
-                    Ready to Bet?
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-center text-gray-600">
-                    Join thousands of users and start placing your predictions!
-                  </p>
-                  <div className="space-y-3">
-                    <Button className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold" asChild>
-                      <Link href="/auth/login">
-                        <LogIn className="mr-2 h-4 w-4" />
-                        Login to Bet
-                      </Link>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full h-12 border-2 border-blue-200 hover:bg-blue-50 bg-transparent"
-                      asChild
-                    >
-                      <Link href="/auth/register">
-                        <UserPlus className="mr-2 h-4 w-4" />
-                        Create Account
-                      </Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {!canBet && (
-              <Card className="bg-gradient-to-br from-gray-50 to-gray-100 border-0 shadow-xl">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-xl">
-                    <Clock className="h-5 w-5 text-gray-600" />
-                    Betting Closed
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    {isFinished
-                      ? "This match has finished. Check out upcoming matches to place new bets."
-                      : isLive
-                        ? "This match is currently live. Betting is closed."
-                        : "Betting is no longer available for this match."}
-                  </p>
-                  <Button
-                    className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold"
-                    asChild
-                  >
-                    <Link href="/matches">Browse Other Matches</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Match Stats */}
-            <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-blue-600" />
-                  Match Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span className="text-gray-600">League:</span>
-                  <span className="font-semibold text-gray-900">{match.league_name}</span>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Prediction Type */}
+        <div>
+          <Label className="block mb-2 text-gray-700 font-medium">Choose Your Prediction</Label>
+          <Select value={predictionType} onValueChange={handlePredictionTypeChange}>
+            <SelectTrigger className="h-12 bg-white border-2 border-green-200 focus:border-green-400">
+              <SelectValue placeholder="Select Bet Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="HOME">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full" />
+                  {match.home_team} Win
                 </div>
-                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span className="text-gray-600">Match ID:</span>
-                  <span className="font-semibold text-gray-900">#{match.id}</span>
+              </SelectItem>
+              <SelectItem value="DRAW">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-yellow-500 rounded-full" />
+                  Draw
                 </div>
-                {match.matchday && (
-                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                    <span className="text-gray-600">Matchday:</span>
-                    <span className="font-semibold text-gray-900">{match.matchday}</span>
-                  </div>
-                )}
-                {match.stage && (
-                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                    <span className="text-gray-600">Stage:</span>
-                    <span className="font-semibold text-gray-900">{match.stage}</span>
-                  </div>
-                )}
-                {match.attendance && (
-                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                    <span className="text-gray-600">Attendance:</span>
-                    <span className="font-semibold text-gray-900">{match.attendance.toLocaleString()}</span>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+              </SelectItem>
+              <SelectItem value="AWAY">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-red-500 rounded-full" />
+                  {match.away_team} Win
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Stake Input */}
+        <div>
+          <Label className="block mb-2 text-gray-700 font-medium">Stake Amount</Label>
+          <div className="relative">
+            <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
+            <Input
+              id="stake-amount"
+              type="text"
+              value={stakeAmount}
+              onChange={handleStakeChange}
+              placeholder="0.00"
+              className="h-12 pl-10 border-2 border-green-200 focus:border-green-400 text-lg font-semibold"
+            />
           </div>
+          {stakeAmount && Number.parseFloat(stakeAmount) > balance && (
+            <ErrorMessage message="Insufficient balance" />
+          )}
+          {stakeAmount &&
+            (Number.parseFloat(stakeAmount) < 0.01 || Number.parseFloat(stakeAmount) > 10000) && (
+              <ErrorMessage message="Amount must be between $0.01 and $10,000" />
+            )}
+        </div>
+
+        {/* Winnings Info */}
+        {stakeAmount &&
+          Number.parseFloat(stakeAmount) >= 0.01 &&
+          Number.parseFloat(stakeAmount) <= 10000 && (
+            <div className="p-4 bg-green-50 border border-green-200 rounded-xl">
+              <InfoRow label="Potential Winnings" value={`$${calculatePotentialWinnings().toFixed(2)}`} highlight="green" />
+              <InfoRow
+                label="Total Return"
+                value={`$${(calculatePotentialWinnings() + Number(stakeAmount)).toFixed(2)}`}
+                bold
+              />
+            </div>
+          )}
+
+        {/* Submit Button */}
+        <Button
+          className={`w-full h-12 text-lg font-semibold ${getPredictionTypeColor(
+            predictionType,
+          )} text-white shadow hover:shadow-md`}
+          onClick={handlePlaceBet}
+          disabled={
+            isPlacingBet ||
+            !stakeAmount ||
+            Number(stakeAmount) < 0.01 ||
+            Number(stakeAmount) > 10000 ||
+            Number(stakeAmount) > balance ||
+            loading
+          }
+        >
+          {isPlacingBet ? (
+            <>
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              Placing Bet...
+            </>
+          ) : (
+            <>
+              <Target className="mr-2 h-5 w-5" />
+              Place Bet
+            </>
+          )}
+        </Button>
+      </CardContent>
+    </Card>
+  )}
+
+  {/* Loading Prediction */}
+  {canBet && user && isAuthenticated() && isPredictionLoading && (
+    <Card className="bg-white shadow-xl border border-gray-200 rounded-2xl">
+      <CardContent className="p-6 flex items-center justify-center space-x-3">
+        <Loader2 className="h-6 w-6 animate-spin text-gray-600" />
+        <span className="text-gray-600">Checking existing predictions...</span>
+      </CardContent>
+    </Card>
+  )}
+
+  {/* Unauthenticated Prompt */}
+  {canBet && (!user || !isAuthenticated()) && (
+    <Card className="bg-white shadow-xl border border-blue-200 rounded-2xl">
+      <CardHeader>
+        <CardTitle className="text-lg text-blue-700 flex justify-center gap-2 items-center">
+          <LogIn className="h-5 w-5" />
+          Ready to Bet?
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4 text-center">
+        <p className="text-gray-600">Create an account or login to start placing your bets.</p>
+        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" asChild>
+          <Link href="/auth/login">
+            <LogIn className="mr-2 h-4 w-4" />
+            Login
+          </Link>
+        </Button>
+        <Button variant="outline" className="w-full border-2 border-blue-200" asChild>
+          <Link href="/auth/register">
+            <UserPlus className="mr-2 h-4 w-4" />
+            Sign Up
+          </Link>
+        </Button>
+      </CardContent>
+    </Card>
+  )}
+
+  {/* Betting Closed */}
+  {!canBet && (
+    <Card className="bg-white shadow-xl border border-gray-200 rounded-2xl">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-gray-700 text-lg">
+          <Clock className="h-5 w-5" />
+          Betting Closed
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="text-gray-600">
+          {isFinished
+            ? "This match has ended. Check upcoming matches to place bets."
+            : isLive
+              ? "This match is live. Betting is disabled."
+              : "Betting is no longer available for this match."}
+        </p>
+        <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white" asChild>
+          <Link href="/matches">Browse Other Matches</Link>
+        </Button>
+      </CardContent>
+    </Card>
+  )}
+
+  {/* Match Information */}
+  <Card className="bg-white shadow-xl border border-gray-200 rounded-2xl">
+    <CardHeader>
+      <CardTitle className="flex items-center gap-2 text-blue-700 text-lg">
+        <TrendingUp className="h-5 w-5" />
+        Match Info
+      </CardTitle>
+    </CardHeader>
+    <CardContent className="space-y-3">
+      <MatchInfo label="League" value={match.league_name} />
+      <MatchInfo label="Match ID" value={`#${match.id}`} />
+      {match.matchday && <MatchInfo label="Matchday" value={match.matchday} />}
+      {match.stage && <MatchInfo label="Stage" value={match.stage} />}
+      {match.attendance && (
+        <MatchInfo label="Attendance" value={match.attendance.toLocaleString()} />
+      )}
+    </CardContent>
+  </Card>
+</div>
+
         </div>
       </div>
     </div>
   )
 }
+
+type MatchInfoItemProps = {
+  icon: React.ReactNode;
+  label: string;
+  value: string | number;
+};
+
+function MatchInfoItem({ icon, label, value }: MatchInfoItemProps) {
+  return (
+    <div className="flex items-start gap-3 bg-gray-50 p-3 rounded-lg">
+      {icon}
+      <div>
+        <p className="text-xs text-gray-500">{label}</p>
+        <p className="text-sm font-medium text-gray-800">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+type OddsBoxProps = {
+  label: string;
+  value: string | number | null | undefined;
+  color: "blue" | "yellow" | "red";
+  team: string;
+};
+
+function OddsBox({ label, value, color, team }: OddsBoxProps) {
+  const colorMap = {
+    blue: { bg: "bg-blue-50", text: "text-blue-600", border: "border-blue-200" },
+    yellow: { bg: "bg-yellow-50", text: "text-yellow-600", border: "border-yellow-200" },
+    red: { bg: "bg-red-50", text: "text-red-600", border: "border-red-200" },
+  };
+
+  const styles = colorMap[color];
+
+  return (
+    <div className={`text-center p-3 ${styles.bg} rounded-xl border ${styles.border}`}>
+      <p className={`text-xs font-medium ${styles.text}`}>{label}</p>
+      <p className={`text-lg font-bold ${styles.text}`}>{value ?? "N/A"}</p>
+      <p className={`text-xs ${styles.text} truncate`}>{team}</p>
+    </div>
+  );
+}
+
+const InfoRow = ({ label, value, highlight, bold = false, color }: any) => (
+  <div className="flex justify-between items-center">
+    <span className="text-sm text-gray-600">{label}:</span>
+    <span
+      className={`text-sm ${bold ? "font-bold" : "font-medium"} ${
+        highlight ? `text-${highlight}-700` : ""
+      } ${color || ""}`}
+    >
+      {value}
+    </span>
+  </div>
+)
+
+const MatchInfo = ({ label, value }: any) => (
+  <div className="flex justify-between items-center px-4 py-3 bg-gray-50 rounded-lg text-sm">
+    <span className="text-gray-600">{label}:</span>
+    <span className="font-medium text-gray-900">{value}</span>
+  </div>
+)
+
+const ErrorMessage = ({ message }: { message: string }) => (
+  <p className="text-sm text-red-500 mt-1 flex items-center gap-1">
+    <Clock className="h-4 w-4" />
+    {message}
+  </p>
+)
