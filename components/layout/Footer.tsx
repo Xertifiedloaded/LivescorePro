@@ -1,5 +1,5 @@
-import Link from "next/link"
-import { Activity, Github, Twitter, Mail } from "lucide-react"
+import Link from "next/link";
+import { Activity, Github, Twitter, Mail } from "lucide-react";
 
 export function Footer() {
   return (
@@ -12,21 +12,33 @@ export function Footer() {
                 <Activity className="h-6 w-6 text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="text-xl font-bold text-gray-900">LiveScore</span>
+                <span className="text-xl font-bold text-gray-900">
+                  LiveScore
+                </span>
                 <span className="text-xs text-gray-500 -mt-1">Pro</span>
               </div>
             </div>
             <p className="text-sm text-gray-600 max-w-xs">
-              Your premier destination for live football scores, betting predictions, and match analysis.
+              Your premier destination for live football scores, betting
+              predictions, and match analysis.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-primary transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-primary transition-colors"
+              >
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-primary transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-primary transition-colors"
+              >
                 <Github className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-primary transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-primary transition-colors"
+              >
                 <Mail className="h-5 w-5" />
               </a>
             </div>
@@ -35,13 +47,22 @@ export function Footer() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-4">Matches</h3>
             <div className="space-y-3">
-              <Link href="/matches" className="block text-sm text-gray-600 hover:text-primary transition-colors">
+              <Link
+                href="/matches"
+                className="block text-sm text-gray-600 hover:text-primary transition-colors"
+              >
                 All Matches
               </Link>
-              <Link href="/live" className="block text-sm text-gray-600 hover:text-primary transition-colors">
+              <Link
+                href="/live"
+                className="block text-sm text-gray-600 hover:text-primary transition-colors"
+              >
                 Live Matches
               </Link>
-              <Link href="/leagues" className="block text-sm text-gray-600 hover:text-primary transition-colors">
+              <Link
+                href="/leagues"
+                className="block text-sm text-gray-600 hover:text-primary transition-colors"
+              >
                 Leagues
               </Link>
             </div>
@@ -50,13 +71,22 @@ export function Footer() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-4">Account</h3>
             <div className="space-y-3">
-              <Link href="/login" className="block text-sm text-gray-600 hover:text-primary transition-colors">
+              <Link
+                href="/auth/login"
+                className="block text-sm text-gray-600 hover:text-primary transition-colors"
+              >
                 Sign In
               </Link>
-              <Link href="/register" className="block text-sm text-gray-600 hover:text-primary transition-colors">
+              <Link
+                href="/auth/register"
+                className="block text-sm text-gray-600 hover:text-primary transition-colors"
+              >
                 Create Account
               </Link>
-              <Link href="/dashboard" className="block text-sm text-gray-600 hover:text-primary transition-colors">
+              <Link
+                href="/dashboard"
+                className="block text-sm text-gray-600 hover:text-primary transition-colors"
+              >
                 Dashboard
               </Link>
             </div>
@@ -65,16 +95,28 @@ export function Footer() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-4">Support</h3>
             <div className="space-y-3">
-              <a href="#" className="block text-sm text-gray-600 hover:text-primary transition-colors">
+              <a
+                href="#"
+                className="block text-sm text-gray-600 hover:text-primary transition-colors"
+              >
                 Help Center
               </a>
-              <a href="#" className="block text-sm text-gray-600 hover:text-primary transition-colors">
+              <a
+                href="#"
+                className="block text-sm text-gray-600 hover:text-primary transition-colors"
+              >
                 Contact Support
               </a>
-              <a href="#" className="block text-sm text-gray-600 hover:text-primary transition-colors">
+              <a
+                href="#"
+                className="block text-sm text-gray-600 hover:text-primary transition-colors"
+              >
                 Terms of Service
               </a>
-              <a href="#" className="block text-sm text-gray-600 hover:text-primary transition-colors">
+              <a
+                href="#"
+                className="block text-sm text-gray-600 hover:text-primary transition-colors"
+              >
                 Privacy Policy
               </a>
             </div>
@@ -82,11 +124,13 @@ export function Footer() {
         </div>
 
         <div className="border-t mt-12 pt-8 text-center">
-          <p className="text-sm text-gray-600">
-            © 2024 LiveScore Pro. All rights reserved. Built with ❤️ for football fans.
-          </p>
+          <small className="text-sm text-gray-600">
+            © 2023 - {new Date().getFullYear()} LiveScore Pro. All rights
+            reserved.
+          </small>
+          <small className="block text-[12px]"> Built with ❤️ for football fans by codeWithXertified</small>
         </div>
       </div>
     </footer>
-  )
+  );
 }

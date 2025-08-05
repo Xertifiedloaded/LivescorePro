@@ -10,6 +10,8 @@ const pool = new Pool({
 
 pool.on("connect", () => {
   console.log("Connected to PostgreSQL database")
+  console.log('🚀 Server running at http://localhost:3000/api')
+  console.log('🚀 frontend running at http://localhost:3000')
 })
 
 pool.on("error", (err) => {

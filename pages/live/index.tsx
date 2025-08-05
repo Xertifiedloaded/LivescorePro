@@ -12,34 +12,42 @@ export default function LiveMatchesPage() {
   const { data: liveMatches, isLoading } = useQuery({
     queryKey: ["liveMatches"],
     queryFn: () => matchesApi.getLiveMatches(),
-    refetchInterval: 10000, // Refetch every 10 seconds
+    refetchInterval: 10000, 
   })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <div className="flex items-center gap-3 mb-3">
-              <LiveIndicator />
-              <span className="text-red-500 font-bold text-sm uppercase tracking-wider">Live Now</span>
-            </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Live Matches</h1>
-            <p className="text-gray-600">Real-time football scores and live updates</p>
-          </div>
-          <div className="flex items-center gap-3">
-            {isLoading && (
-              <div className="flex items-center gap-2 text-gray-500">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span className="text-sm">Updating...</span>
-              </div>
-            )}
-            <Button variant="outline" >
-              <Link href="/matches">All Matches</Link>
-            </Button>
-          </div>
-        </div>
+<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+  <div>
+    <div className="flex items-center gap-2 mb-2 sm:mb-3">
+      <LiveIndicator />
+      <span className="text-red-500 font-bold text-xs sm:text-sm uppercase tracking-wider">
+        Live Now
+      </span>
+    </div>
+    <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">
+      Live Matches
+    </h1>
+    <p className="text-sm sm:text-base text-gray-600">
+      Real-time football scores and live updates
+    </p>
+  </div>
+
+  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+    {isLoading && (
+      <div className="flex items-center gap-2 text-gray-500">
+        <Loader2 className="h-4 w-4 animate-spin" />
+        <span className="text-sm">Updating...</span>
+      </div>
+    )}
+    <Button variant="outline" className="text-sm px-4 py-2">
+      <Link href="/matches">All Matches</Link>
+    </Button>
+  </div>
+</div>
+
 
         {/* Live Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

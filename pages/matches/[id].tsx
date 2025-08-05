@@ -93,16 +93,14 @@ export default function MatchDetailsPage() {
   const [loading, setLoading] = useState(true)
   const [sessionExpired, setSessionExpired] = useState(false)
 
-  // Check if user is authenticated
+
   const isAuthenticated = () => {
     const token = localStorage.getItem("token")
     return !!(user && token)
   }
 
-  // Handle authentication errors (only for expired sessions, not missing auth)
   const handleAuthError = (error: any) => {
     if (error?.response?.status === 401 || error?.status === 401) {
-      // Only set session expired if user was previously authenticated
       if (user || localStorage.getItem("token")) {
         setSessionExpired(true)
         toast({
@@ -150,7 +148,6 @@ export default function MatchDetailsPage() {
     fetchBalance()
   }, [user, router])
 
-  // Fetch match details - allow unauthenticated access
   const {
     data: matchData,
     isLoading,
@@ -161,7 +158,6 @@ export default function MatchDetailsPage() {
       try {
         return await matchesApi.getMatchById(id as string)
       } catch (error: any) {
-        // Only handle auth errors if user was authenticated
         if (isAuthenticated() && handleAuthError(error)) {
           throw new Error("Authentication required")
         }
@@ -170,7 +166,6 @@ export default function MatchDetailsPage() {
     },
     enabled: !!id && !sessionExpired,
     retry: (failureCount, error: any) => {
-      // Don't retry on 401 errors for authenticated users
       if (isAuthenticated() && (error?.response?.status === 401 || error?.status === 401)) {
         return false
       }
@@ -178,7 +173,6 @@ export default function MatchDetailsPage() {
     },
   })
 
-  // Fetch existing prediction for this match (only for authenticated users)
   const {
     data: existingPrediction,
     isLoading: isPredictionLoading,

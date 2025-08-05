@@ -314,14 +314,13 @@ export default function HomePage() {
           )}
         </section>
 
-        {/* Features Section */}
         <section className="py-20 bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-sm rounded-3xl border border-slate-700/30 mb-24">
           <div className="px-8 md:px-16">
             <div className="text-center mb-16">
-              <h2 className="text-2xl font-bold text-white mb-6">
+              <h2 className="text-2xl  font-bold text-white mb-6">
                 Professional-Grade Features
               </h2>
-              <p className="text-slate-300 text-xs max-w-3xl mx-auto leading-relaxed">
+              <p className="text-slate-300 text-xs lg:text-sm max-w-3xl mx-auto leading-relaxed">
                 Advanced tools and insights designed for serious football
                 betting professionals and enthusiasts
               </p>
@@ -380,43 +379,41 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="text-center py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 rounded-3xl text-white relative overflow-hidden">
-          <div className="absolute inset-0 bg-black/20" />
-          <div className="relative max-w-4xl mx-auto px-8">
-            <h2 className="text-3xl font-bold mb-8">
-              Ready to Dominate the Game?
-            </h2>
-            <p className="text-xl text-blue-100 mb-10 leading-relaxed max-w-3xl mx-auto">
-              Join the elite circle of professional bettors who rely on
-              BetFootball Pro for data-driven predictions. Start your premium
-              trial today—no commitment required.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Button
-                size="lg"
-                className="bg-white text-blue-600 hover:bg-gray-100 px-10 py-4 h-14 font-bold rounded-xl shadow-2xl hover:shadow-white/20 transition-all duration-300"
+<section className="text-center py-16 sm:py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 rounded-3xl text-white relative overflow-hidden">
+  <div className="absolute inset-0 bg-black/20" />
+  <div className="relative max-w-4xl mx-auto px-4 sm:px-8">
+    <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">
+      Ready to Dominate the Game?
+    </h2>
+    <p className="text-sm sm:text-xl text-blue-100 mb-8 sm:mb-10 leading-relaxed max-w-3xl mx-auto">
+      Join the elite circle of professional bettors who rely on
+      BetFootball Pro for data-driven predictions. Start your premium
+      trial today—no commitment required.
+    </p>
+    <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
+      <Button
+        size="lg"
+        className="bg-white text-blue-600 hover:bg-gray-100 px-6 sm:px-10 py-3 sm:py-4 h-12 sm:h-14 font-bold rounded-xl shadow-2xl hover:shadow-white/20 transition-all duration-300"
+      >
+        <Link className="flex items-center" href="/register">
+          <Zap className="mr-2 h-5 w-5 sm:h-6 sm:w-6" />
+          <span className="text-sm sm:text-sm">Start Premium Trial</span>
+        </Link>
+      </Button>
+      <Button
+        size="lg"
+        variant="outline"
+        className="border-white/40 text-white hover:bg-white/10 backdrop-blur-sm px-6 sm:px-10 py-3 sm:py-4 h-12 sm:h-14 font-bold rounded-xl"
+      >
+        <Link className="flex items-center" href="/matches">
+          <Play className="mr-2 h-5 w-5 sm:h-6 sm:w-6" />
+          <span className="text-sm sm:text-sm">Explore Platform</span>
+        </Link>
+      </Button>
+    </div>
+  </div>
+</section>
 
-              >
-                <Link className="flex items-center" href="/register">
-                  <Zap className="mr-2 h-6 w-6" />
-                  Start Premium Trial
-                </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white/40 text-white hover:bg-white/10 backdrop-blur-sm px-10 py-4 h-14 font-bold rounded-xl"
-
-              >
-                <Link className="flex items-center" href="/matches">
-                  <Play className="mr-2 h-6 w-6" />
-                  Explore Platform
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </section>
       </div>
     </div>
   );
@@ -440,14 +437,16 @@ function FeatureCard({
   return (
     <div className="text-left group hover:transform hover:scale-105 transition-all duration-500">
       <div
-        className={`w-16 h-16 ${bgColor} ${borderColor} border rounded-2xl flex items-center justify-center mb-6 ${color} group-hover:scale-110 transition-transform duration-300 backdrop-blur-sm shadow-lg`}
+        className={`w-14 h-14 sm:w-16 sm:h-16 ${bgColor} ${borderColor} border rounded-2xl flex items-center justify-center mb-4 sm:mb-6 ${color} group-hover:scale-110 transition-transform duration-300 backdrop-blur-sm shadow-lg`}
       >
         {icon}
       </div>
-      <h3 className="font-bold text-xl mb-4 text-white group-hover:text-blue-300 transition-colors">
+      <h3 className="font-bold text-lg sm:text-xl mb-2 sm:mb-4 text-white group-hover:text-blue-300 transition-colors">
         {title}
       </h3>
-      <p className="text-slate-300 leading-relaxed">{description}</p>
+      <p className="text-sm sm:text-sm text-slate-300 leading-relaxed">
+        {description}
+      </p>
     </div>
   );
 }
@@ -460,11 +459,11 @@ function LeagueCard({ leagueData }: { leagueData: LeagueWithMatches }) {
     <Card className="group hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 border border-slate-700/50 shadow-xl overflow-hidden bg-slate-800/60 backdrop-blur-sm hover:border-blue-500/30">
       <CardHeader className="bg-gradient-to-r from-slate-700/60 to-slate-800/60 border-b border-slate-700/50 backdrop-blur-sm">
         <CardTitle className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-xl bg-slate-900/60 backdrop-blur-sm shadow-lg flex items-center justify-center overflow-hidden border border-slate-600/50">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-slate-900/60 backdrop-blur-sm shadow-lg flex items-center justify-center overflow-hidden border border-slate-600/50">
             <img
               src={leagueData.league.emblem || placeholderImage}
               alt={leagueData.league.name}
-              className="w-10 h-10 object-contain"
+              className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = placeholderImage;
@@ -472,18 +471,18 @@ function LeagueCard({ leagueData }: { leagueData: LeagueWithMatches }) {
             />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="font-bold text-xl text-white group-hover:text-blue-300 transition-colors line-clamp-1">
+            <div className="font-bold text-base sm:text-xl text-white group-hover:text-blue-300 transition-colors line-clamp-1">
               {leagueData.league.name}
             </div>
-            <div className="text-slate-400 text-sm font-medium">
+            <div className="text-slate-400 text-xs sm:text-sm font-medium">
               {leagueData.league.country}
             </div>
           </div>
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <span className="text-slate-400 text-sm font-medium">
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <span className="text-slate-400 text-xs sm:text-sm font-medium">
             Upcoming matches
           </span>
           <Badge
@@ -494,7 +493,7 @@ function LeagueCard({ leagueData }: { leagueData: LeagueWithMatches }) {
           </Badge>
         </div>
         <Button
-          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold shadow-lg"
+          className="w-full text-sm sm:text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold shadow-lg"
           asChild
         >
           <Link href={`/matches?league=${leagueData.league.code}`}>
@@ -506,6 +505,7 @@ function LeagueCard({ leagueData }: { leagueData: LeagueWithMatches }) {
     </Card>
   );
 }
+
 
 function MatchCard({
   match,
@@ -537,19 +537,19 @@ function MatchCard({
             )}
             {isLive ? "LIVE" : match.status}
           </Badge>
-          <span className="text-sm text-slate-400 font-medium">
+          <span className="text-xs sm:text-sm text-slate-400 font-medium">
             {match.league_name}
           </span>
         </div>
       </CardHeader>
-      <CardContent className="p-6">
-        <div className="space-y-5">
+      <CardContent className="p-4 sm:p-6">
+        <div className="space-y-4 sm:space-y-5">
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-white text-lg">
+            <span className="font-semibold text-white text-base sm:text-lg">
               {match.home_team}
             </span>
             {match.home_score !== undefined && (
-              <span className="font-bold text-3xl text-blue-400">
+              <span className="font-bold text-2xl sm:text-3xl text-blue-400">
                 {match.home_score}
               </span>
             )}
@@ -557,51 +557,51 @@ function MatchCard({
 
           <div className="flex items-center justify-center">
             <div className="w-full h-px bg-slate-600" />
-            <span className="px-6 text-slate-500 font-bold text-sm">VS</span>
+            <span className="px-4 sm:px-6 text-slate-500 font-bold text-xs sm:text-sm">VS</span>
             <div className="w-full h-px bg-slate-600" />
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-white text-lg">
+            <span className="font-semibold text-white text-base sm:text-lg">
               {match.away_team}
             </span>
             {match.away_score !== undefined && (
-              <span className="font-bold text-3xl text-blue-400">
+              <span className="font-bold text-2xl sm:text-3xl text-blue-400">
                 {match.away_score}
               </span>
             )}
           </div>
 
           {!isLive && (
-            <div className="text-center text-sm text-slate-300 bg-slate-700/50 rounded-lg py-3 border border-slate-600/50 backdrop-blur-sm">
+            <div className="text-center text-xs sm:text-sm text-slate-300 bg-slate-700/50 rounded-lg py-2 sm:py-3 border border-slate-600/50 backdrop-blur-sm">
               <Calendar className="h-4 w-4 inline mr-2" />
               {format(new Date(match.match_date), "MMM dd, HH:mm")}
             </div>
           )}
 
           {match.odds_home && (
-            <div className="grid grid-cols-3 gap-3 text-sm">
-              <div className="text-center p-3 bg-emerald-500/20 rounded-lg border border-emerald-500/30 backdrop-blur-sm">
-                <div className="font-bold text-emerald-300 text-lg">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 text-xs sm:text-sm">
+              <div className="text-center p-2 sm:p-3 bg-emerald-500/20 rounded-lg border border-emerald-500/30 backdrop-blur-sm">
+                <div className="font-bold text-emerald-300 text-base sm:text-lg">
                   {match.odds_home}
                 </div>
-                <div className="text-emerald-400 text-xs font-medium uppercase tracking-wider">
+                <div className="text-emerald-400 text-[10px] sm:text-xs font-medium uppercase tracking-wider">
                   Home
                 </div>
               </div>
-              <div className="text-center p-3 bg-slate-700/50 rounded-lg border border-slate-600/50 backdrop-blur-sm">
-                <div className="font-bold text-slate-300 text-lg">
+              <div className="text-center p-2 sm:p-3 bg-slate-700/50 rounded-lg border border-slate-600/50 backdrop-blur-sm">
+                <div className="font-bold text-slate-300 text-base sm:text-lg">
                   {match.odds_draw}
                 </div>
-                <div className="text-slate-400 text-xs font-medium uppercase tracking-wider">
+                <div className="text-slate-400 text-[10px] sm:text-xs font-medium uppercase tracking-wider">
                   Draw
                 </div>
               </div>
-              <div className="text-center p-3 bg-blue-500/20 rounded-lg border border-blue-500/30 backdrop-blur-sm">
-                <div className="font-bold text-blue-300 text-lg">
+              <div className="text-center p-2 sm:p-3 bg-blue-500/20 rounded-lg border border-blue-500/30 backdrop-blur-sm">
+                <div className="font-bold text-blue-300 text-base sm:text-lg">
                   {match.odds_away}
                 </div>
-                <div className="text-blue-400 text-xs font-medium uppercase tracking-wider">
+                <div className="text-blue-400 text-[10px] sm:text-xs font-medium uppercase tracking-wider">
                   Away
                 </div>
               </div>
@@ -609,7 +609,7 @@ function MatchCard({
           )}
 
           <Button
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold shadow-lg"
+            className="w-full text-sm sm:text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold shadow-lg"
             asChild
           >
             <Link href={`/matches/${match.id}`}>
