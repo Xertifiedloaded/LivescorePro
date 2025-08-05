@@ -1,12 +1,24 @@
 export default function handler(req, res) {
   if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" })
+    return res.status(405).json({ error: "Method not allowed" });
   }
-
+  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const host = req.headers.host;
+  const baseUrl = `${protocol}://${host}`;
   res.status(200).json({
     name: "Football Betting API",
     version: "1.0.0",
     framework: "Next.js",
+    techStack: {
+      backend: "Node.js",
+      frontend: "Next.js",
+      database: "PostgreSQL",
+      auth: "JWT",
+      runtime: "Vercel / Node.js",
+      api: "REST",
+      css: "Tailwind CSS",
+      query: "Raw SQL via pg (node-postgres)",
+    },
     endpoints: {
       public: {
         health: "/api/health",
@@ -36,10 +48,7 @@ export default function handler(req, res) {
         user_profile: "/api/users/profile",
       },
     },
-    documentation: "See README.md for detailed API documentation",
+    documentation: `${baseUrl}/documentation`,
     timestamp: new Date().toISOString(),
-  })
+  });
 }
-
-
-
