@@ -1,0 +1,104 @@
+### Football Betting API - Predictions Tests
+@baseUrl = http://localhost:3000/api
+@contentType = application/json
+
+### First, login to get auth token
+# @name loginForPredictions
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "username": "john_doe",
+  "password": "Password123"
+}
+
+###
+@authToken = {{loginForPredictions.response.body.accessToken}}
+
+### 1. Create a Prediction
+POST {{baseUrl}}/predictions
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "matchId": 1,
+  "predictionType": "HOME",
+  "stakeAmount": 10.00
+}
+
+### 2. Create Another Prediction
+POST {{baseUrl}}/predictions
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "matchId": 2,
+  "predictionType": "AWAY",
+  "stakeAmount": 25.50
+}
+
+### 3. Create Draw Prediction
+POST {{baseUrl}}/predictions
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "matchId": 3,
+  "predictionType": "DRAW",
+  "stakeAmount": 15.00
+}
+
+### 4. Get My Predictions
+GET {{baseUrl}}/predictions/my
+Authorization: Bearer {{authToken}}
+
+### 5. Get My Predictions with Filters
+GET {{baseUrl}}/predictions/my?status=PENDING&limit=10
+
+### 6. Get My Prediction Statistics
+GET {{baseUrl}}/predictions/stats
+Authorization: Bearer {{authToken}}
+
+### 7. Test Invalid Prediction (insufficient balance)
+POST {{baseUrl}}/predictions
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "matchId": 4,
+  "predictionType": "HOME",
+  "stakeAmount": 10000.00
+}
+
+### 8. Test Invalid Prediction (invalid match)
+POST {{baseUrl}}/predictions
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "matchId": 99999,
+  "predictionType": "HOME",
+  "stakeAmount": 10.00
+}
+
+### 9. Test Invalid Prediction (invalid type)
+POST {{baseUrl}}/predictions
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "matchId": 1,
+  "predictionType": "INVALID",
+  "stakeAmount": 10.00
+}
+
+### 10. Test Duplicate Prediction (same match)
+POST {{baseUrl}}/predictions
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "matchId": 1,
+  "predictionType": "AWAY",
+  "stakeAmount": 5.00
+}

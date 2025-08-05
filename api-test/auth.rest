@@ -1,0 +1,107 @@
+### Football Betting API - Authentication Tests
+@baseUrl = http://localhost:3000/api
+@contentType = application/json
+
+### 1. Register New User
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "john_doe",
+  "email": "john@example.com",
+  "password": "Password123",
+  "firstName": "John",
+  "lastName": "Doe"
+}
+
+### 2. Register Another User
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "jane_smith",
+  "email": "jane@example.com",
+  "password": "SecurePass456",
+  "firstName": "Jane",
+  "lastName": "Smith"
+}
+
+### 3. Login User
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "username": "john_doe",
+  "password": "Password123"
+}
+
+### 4. Login with Email
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "username": "john@example.com",
+  "password": "Password123"
+}
+
+### 5. Get User Profile (requires token from login response)
+# @name loginResponse
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "username": "john_doe",
+  "password": "Password123"
+}
+
+###
+@authToken = {{loginResponse.response.body.accessToken}}
+
+GET {{baseUrl}}/auth/profile
+Authorization: Bearer {{authToken}}
+
+### 6. Refresh Token
+POST {{baseUrl}}/auth/refresh
+Content-Type: {{contentType}}
+
+{
+  "refreshToken": "{{loginResponse.response.body.refreshToken}}"
+}
+
+### 7. Logout
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "refreshToken": "{{loginResponse.response.body.refreshToken}}"
+}
+
+### 8. Test Invalid Registration (weak password)
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "weakuser",
+  "email": "weak@example.com",
+  "password": "123"
+}
+
+### 9. Test Invalid Registration (duplicate username)
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "john_doe",
+  "email": "duplicate@example.com",
+  "password": "Password123"
+}
+
+### 10. Test Invalid Login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "username": "john_doe",
+  "password": "wrongpassword"
+}

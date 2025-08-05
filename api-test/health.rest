@@ -1,0 +1,18 @@
+### Football Betting API - Health & Info Tests
+@baseUrl = http://localhost:3000/api
+
+### 1. Health Check
+GET {{baseUrl}}/health
+
+### 2. API Information
+GET {{baseUrl}}
+
+### 3. Test 404 Route
+GET {{baseUrl}}/nonexistent
+
+### 4. Test Rate Limiting (run multiple times quickly)
+GET {{baseUrl}}/today
+
+### 5. Test CORS (if needed)
+OPTIONS {{baseUrl}}/matches
+Origin: http://localhost:3001

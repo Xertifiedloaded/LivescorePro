@@ -1,0 +1,110 @@
+### Football Betting API - Complete User Flow
+@baseUrl = http://localhost:3000/api
+@contentType = application/json
+
+
+### 3. View All Leagues
+GET {{baseUrl}}/matches/leagues/all
+
+### 4. Register New User
+# @name registration
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "complete_user",
+  "email": "complete@example.com",
+  "password": "CompleteFlow123",
+  "firstName": "Complete",
+  "lastName": "User"
+}
+
+### 5. Login with New User
+# @name completeLogin
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "username": "complete_user",
+  "password": "CompleteFlow123"
+}
+
+###
+@authToken = {{completeLogin.response.body.accessToken}}
+
+### 6. Check Initial Balance
+GET {{baseUrl}}/users/balance
+Authorization: Bearer {{authToken}}
+
+### 7. Add Funds
+POST {{baseUrl}}/users/add-funds
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "amount": 200.00
+}
+
+### 8. Check Updated Balance
+GET {{baseUrl}}/users/balance
+Authorization: Bearer {{authToken}}
+
+### 9. View Available Matches for Betting
+GET {{baseUrl}}/matches?status=SCHEDULED&limit=5
+
+### 10. Place First Bet
+POST {{baseUrl}}/predictions
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "matchId": 1,
+  "predictionType": "HOME",
+  "stakeAmount": 25.00
+}
+
+### 11. Place Second Bet
+POST {{baseUrl}}/predictions
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "matchId": 2,
+  "predictionType": "AWAY",
+  "stakeAmount": 15.00
+}
+
+### 12. Check Balance After Bets
+GET {{baseUrl}}/users/balance
+Authorization: Bearer {{authToken}}
+
+### 13. View My Predictions
+GET {{baseUrl}}/predictions/my
+Authorization: Bearer {{authToken}}
+
+### 14. View My Statistics
+GET {{baseUrl}}/predictions/stats
+Authorization: Bearer {{authToken}}
+
+### 15. Update Profile
+PUT {{baseUrl}}/users/profile
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "firstName": "Updated Complete",
+  "lastName": "Flow User"
+}
+
+### 16. View Updated Profile
+GET {{baseUrl}}/auth/profile
+Authorization: Bearer {{authToken}}
+
+### 17. Logout
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "refreshToken": "{{completeLogin.response.body.refreshToken}}"
+}

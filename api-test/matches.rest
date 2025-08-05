@@ -1,0 +1,64 @@
+### Football Betting API - Matches Tests
+@baseUrl = http://localhost:3000/api
+
+### 1. All Matches
+GET {{baseUrl}}/matches
+
+### 2. Today's Matches (Short Route)
+GET {{baseUrl}}/today
+
+### 4.  Live Matches (Full Route)
+GET {{baseUrl}}/matches/live
+
+GET {{baseUrl}}/matches/leagues/all
+
+### 6.  Matches with Filters
+GET {{baseUrl}}/matches?status=SCHEDULED&limit=10&offset=0
+
+### 7. Get Matches by League
+GET {{baseUrl}}/matches?league=Premier League
+
+### 8. Get Matches by Date Range
+GET {{baseUrl}}/matches?dateFrom=2024-01-01&dateTo=2024-12-31
+
+### 9. Get Premier League Matches
+GET {{baseUrl}}/matches/competition/PL
+
+### 10. Get La Liga Matches
+GET {{baseUrl}}/matches/competition/PD
+
+### 11. Get Bundesliga Matches
+GET {{baseUrl}}/matches/competition/BL1
+
+### 12. Get Serie A Matches
+GET {{baseUrl}}/matches/competition/SA
+
+### 13. Get Champions League Matches
+GET {{baseUrl}}/matches/competition/CL
+
+### 14. Get Match by ID
+GET {{baseUrl}}/matches/1
+
+### 15. Get Today's Matches (Public Route)
+GET {{baseUrl}}/public/matches/today
+
+### 16. Get This Week's Matches
+GET {{baseUrl}}/public/matches/week
+
+### 17. Get Popular League Matches
+GET {{baseUrl}}/public/matches/popular
+
+### 18. Get Match Statistics
+GET {{baseUrl}}/public/matches/stats
+
+### 19. Trigger Manual Fixture Sync (Admin)
+POST {{baseUrl}}/matches/sync
+
+### 20. Get Matches with Pagination
+GET {{baseUrl}}/matches?limit=5&offset=10
+
+### 21. Get Finished Matches
+GET {{baseUrl}}/matches?status=FINISHED
+
+### 22. Get In-Play Matches
+GET {{baseUrl}}/matches?status=IN_PLAY
