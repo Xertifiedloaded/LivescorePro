@@ -100,7 +100,7 @@ console.log(match)
             </div>
           </div>
 
-          {/* Match Info */}
+
           {!isLive && !isFinished && (
             <div className="flex items-center justify-center gap-2 text-sm text-gray-600 bg-gray-50 rounded-lg py-3 px-4">
               <Calendar className="h-4 w-4" />
@@ -108,7 +108,7 @@ console.log(match)
             </div>
           )}
 
-          {/* Betting Odds */}
+
           {match.odds_home && !isFinished && (
             <div className="grid grid-cols-3 gap-3">
               <div className="text-center p-3 bg-green-50 rounded-lg border border-green-100">
@@ -126,7 +126,6 @@ console.log(match)
             </div>
           )}
 
-          {/* Additional Info */}
           {match.prediction_count && (
             <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
               <Users className="h-4 w-4" />
@@ -134,7 +133,7 @@ console.log(match)
             </div>
           )}
 
-          {/* Action Button */}
+
           <Button
             className="w-full flex items-center bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold shadow-lg group-hover:shadow-xl transition-all"
             

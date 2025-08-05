@@ -72,6 +72,59 @@ export const matchesApi = {
       status?: string
     },
   ) => api.get(`/matches/competition/${code}`, { params }),
+  // Head to Head
+  getHeadToHead: (
+    matchId: string,
+    params?: {
+      limit?: number
+      dateFrom?: string
+      dateTo?: string
+      competitions?: string
+    }
+  ) => api.get(`/matches/${matchId}/head2head`, { params }),
+}
+
+export const teamsApi = {
+  getTeams: (params?: {
+    limit?: number
+    offset?: number
+  }) => api.get("/teams", { params }),
+  getTeamMatches: (
+    teamId: string,
+    params?: {
+      dateFrom?: string
+      dateTo?: string
+      season?: string
+      competitions?: string
+      status?: string
+      venue?: string
+      limit?: number
+    }
+  ) => api.get(`/teams/${teamId}/matches`, { params }),
+}
+
+export const competitionsApi = {
+  getTopScorers: (
+    competitionId: string,
+    params?: {
+      limit?: number
+      season?: string
+    }
+  ) => api.get(`/competitions/${competitionId}/scorers`, { params }),
+}
+
+export const personsApi = {
+  getPersonMatches: (
+    personId: string,
+    params?: {
+      dateFrom?: string
+      dateTo?: string
+      status?: string
+      competitions?: string
+      limit?: number
+      offset?: number
+    }
+  ) => api.get(`/persons/${personId}/matches`, { params }),
 }
 
 export const predictionsApi = {

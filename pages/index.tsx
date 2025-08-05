@@ -25,6 +25,7 @@ import { Button } from "../components/ui/button";
 import { matchesApi } from "../lib/api";
 import { Badge } from "../components/ui/badge";
 import Link from "next/link";
+import MatchesDailyWeekly from "@/components/layout/WeeklyDaily";
 
 // Define proper types
 interface Match {
@@ -263,7 +264,7 @@ export default function HomePage() {
           )}
         </section>
 
-        {/* Popular Leagues */}
+<MatchesDailyWeekly/>
         <section className="mb-24">
           <div className="flex items-center justify-between mb-10">
             <div>
