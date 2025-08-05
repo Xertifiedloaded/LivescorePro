@@ -1,54 +1,79 @@
-'use client'
+"use client"
 
-import type React from 'react'
-
-import { useState } from 'react'
-import { useRouter } from 'next/router'
-import Link from 'next/link'
-import { useAuth } from '@/contexts/AuthContext'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Eye, EyeOff, Mail, Lock, User, UserPlus, ArrowLeft } from 'lucide-react'
+import type React from "react"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Eye, EyeOff, Mail, Lock, User, UserPlus, ArrowLeft } from "lucide-react"
 
 export default function RegisterPage() {
   const router = useRouter()
-  const { register } = useAuth()
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    firstName: "",
+    lastName: "",
   })
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
+    setError("")
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match')
+      setError("Passwords do not match")
       return
     }
 
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long')
+      setError("Password must be at least 6 characters long")
+      return
+    }
+
+    if (formData.username.length < 3) {
+      setError("Username must be at least 3 characters long")
       return
     }
 
     setIsLoading(true)
-    // @ts-ignore
+
     try {
-      // @ts-ignore
-      await register(formData.name, formData.email, formData.password)
-      router.push('/dashboard')
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Registration failed")
+      }
+
+      localStorage.setItem("accessToken", data.accessToken)
+      localStorage.setItem("refreshToken", data.refreshToken)
+
+      router.push("/auth/login")
     } catch (err) {
-      setError('Registration failed. Please try again.')
+      setError(err instanceof Error ? err.message : "Registration failed. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -63,15 +88,9 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
-      {/* Mobile-optimized container */}
       <div className="flex flex-col min-h-screen">
-        {/* Header with back button - optimized for mobile */}
         <div className="flex-shrink-0 p-4 sm:p-6">
-          <Button
-            variant="ghost"
-            className="p-2 sm:p-3 -ml-2 sm:-ml-3 hover:bg-slate-100 rounded-lg"
-            asChild
-          >
+          <Button variant="ghost" className="p-2 sm:p-3 -ml-2 sm:-ml-3 hover:bg-slate-100 rounded-lg" asChild>
             <Link href="/" className="flex items-center">
               <ArrowLeft className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               <span className="text-sm sm:text-base">Back to Home</span>
@@ -79,11 +98,9 @@ export default function RegisterPage() {
           </Button>
         </div>
 
-        {/* Main content - centered and responsive */}
         <div className="flex-1 flex items-center justify-center px-4 pb-8">
           <div className="w-full max-w-md">
             <Card className="border-0 shadow-xl sm:shadow-2xl bg-white/95 backdrop-blur-sm">
-              {/* Header - responsive sizing */}
               <CardHeader className="text-center px-4 sm:px-6 pt-6 sm:pt-8 pb-4 sm:pb-6">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
                   <UserPlus className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
@@ -91,12 +108,9 @@ export default function RegisterPage() {
                 <CardTitle className="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight">
                   Create Account
                 </CardTitle>
-                <p className="text-gray-600 mt-2 text-sm sm:text-base">
-                  Join thousands of football fans today
-                </p>
+                <p className="text-gray-600 mt-2 text-sm sm:text-base">Join thousands of football fans today</p>
               </CardHeader>
 
-              {/* Form content - mobile-optimized spacing */}
               <CardContent className="px-4 sm:px-6 pb-6 sm:pb-8">
                 {error && (
                   <Alert variant="destructive" className="mb-4 sm:mb-6">
@@ -105,19 +119,18 @@ export default function RegisterPage() {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-                  {/* Full Name Field */}
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-sm font-medium text-gray-700">
-                      Full Name
+                    <Label htmlFor="username" className="text-sm font-medium text-gray-700">
+                      Username
                     </Label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                       <Input
-                        id="name"
-                        name="name"
+                        id="username"
+                        name="username"
                         type="text"
-                        placeholder="Enter your full name"
-                        value={formData.name}
+                        placeholder="Enter your username"
+                        value={formData.username}
                         onChange={handleChange}
                         className="pl-10 h-11 sm:h-12 text-base border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
                         required
@@ -125,7 +138,37 @@ export default function RegisterPage() {
                     </div>
                   </div>
 
-                  {/* Email Field */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">
+                        First Name
+                      </Label>
+                      <Input
+                        id="firstName"
+                        name="firstName"
+                        type="text"
+                        placeholder="First name"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        className="h-11 sm:h-12 text-base border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
+                        Last Name
+                      </Label>
+                      <Input
+                        id="lastName"
+                        name="lastName"
+                        type="text"
+                        placeholder="Last name"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        className="h-11 sm:h-12 text-base border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
+                      />
+                    </div>
+                  </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-sm font-medium text-gray-700">
                       Email Address
@@ -146,7 +189,6 @@ export default function RegisterPage() {
                     </div>
                   </div>
 
-                  {/* Password Field */}
                   <div className="space-y-2">
                     <Label htmlFor="password" className="text-sm font-medium text-gray-700">
                       Password
@@ -156,7 +198,7 @@ export default function RegisterPage() {
                       <Input
                         id="password"
                         name="password"
-                        type={showPassword ? 'text' : 'password'}
+                        type={showPassword ? "text" : "password"}
                         placeholder="Create a password"
                         value={formData.password}
                         onChange={handleChange}
@@ -168,18 +210,13 @@ export default function RegisterPage() {
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:text-primary transition-colors"
-                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
                       >
-                        {showPassword ? (
-                          <EyeOff className="h-4 w-4" />
-                        ) : (
-                          <Eye className="h-4 w-4" />
-                        )}
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
                     </div>
                   </div>
 
-                  {/* Confirm Password Field */}
                   <div className="space-y-2">
                     <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
                       Confirm Password
@@ -189,7 +226,7 @@ export default function RegisterPage() {
                       <Input
                         id="confirmPassword"
                         name="confirmPassword"
-                        type={showConfirmPassword ? 'text' : 'password'}
+                        type={showConfirmPassword ? "text" : "password"}
                         placeholder="Confirm your password"
                         value={formData.confirmPassword}
                         onChange={handleChange}
@@ -201,13 +238,9 @@ export default function RegisterPage() {
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:text-primary transition-colors"
-                        aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                        aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                       >
-                        {showConfirmPassword ? (
-                          <EyeOff className="h-4 w-4" />
-                        ) : (
-                          <Eye className="h-4 w-4" />
-                        )}
+                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
                     </div>
                   </div>
@@ -242,15 +275,14 @@ export default function RegisterPage() {
                         Creating Account...
                       </span>
                     ) : (
-                      'Create Account'
+                      "Create Account"
                     )}
                   </Button>
                 </form>
 
-                {/* Sign in link - mobile-friendly */}
                 <div className="text-center mt-6 sm:mt-8 pt-4 border-t border-gray-100">
                   <p className="text-gray-600 text-sm sm:text-base">
-                    Already have an account?{' '}
+                    Already have an account?{" "}
                     <Link
                       href="/auth/login"
                       className="text-primary font-semibold hover:underline focus:outline-none focus:underline transition-colors"

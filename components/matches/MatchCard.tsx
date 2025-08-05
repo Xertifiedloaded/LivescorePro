@@ -90,7 +90,6 @@ export function MatchCard({ match, isLive = false }: MatchListItemProps) {
               )}
             </div>
 
-            {/* Away team */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-3 justify-end">
                 <span className="font-semibold text-gray-900 truncate">{match.away_team}</span>
@@ -101,7 +100,6 @@ export function MatchCard({ match, isLive = false }: MatchListItemProps) {
             </div>
           </div>
 
-          {/* Additional info row */}
           <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
             <div className="flex items-center gap-4 text-sm text-gray-500">
               {!isFinished && match.match_date && (
