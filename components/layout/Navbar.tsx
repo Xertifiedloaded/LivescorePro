@@ -229,14 +229,14 @@ export function Navbar() {
               {!user && (
                 <div className="border-t pt-4 mt-4 space-y-2">
                   <Link
-                    href="/login"
+                    href="/auth/login"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Sign In
                   </Link>
                   <Link
-                    href="/register"
+                    href="/auth/register"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium bg-primary text-white"
                     onClick={() => setMobileMenuOpen(false)}
                   >
