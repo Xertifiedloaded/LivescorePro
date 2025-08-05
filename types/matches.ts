@@ -4,7 +4,7 @@ export interface Match {
   home_team: string
   away_team: string
   match_date: string
-  status: "SCHEDULED" | "IN_PLAY" | "FINISHED" | "POSTPONED" | "CANCELLED"
+  status: 'SCHEDULED' | 'IN_PLAY' | 'FINISHED' | 'POSTPONED' | 'CANCELLED'
   home_score?: number
   away_score?: number
   odds_home?: string
@@ -35,10 +35,10 @@ export interface League {
 export interface Prediction {
   id: number
   match_id: number
-  prediction_type: "HOME" | "DRAW" | "AWAY"
+  prediction_type: 'HOME' | 'DRAW' | 'AWAY'
   stake_amount: string
   potential_winnings: string
-  status: "PENDING" | "WON" | "LOST" | "CANCELLED"
+  status: 'PENDING' | 'WON' | 'LOST' | 'CANCELLED'
   created_at: string
   home_team: string
   away_team: string

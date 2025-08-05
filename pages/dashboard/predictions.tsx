@@ -1,15 +1,21 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { useAuth } from "@/contexts/AuthContext"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { predictionsApi } from "@/lib/api"
-import { Target, TrendingUp, Calendar, Filter } from "lucide-react"
-import Link from "next/link"
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute"
+import { useState, useEffect } from 'react'
+import { useAuth } from '@/contexts/AuthContext'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { predictionsApi } from '@/lib/api'
+import { Target, TrendingUp, Calendar, Filter } from 'lucide-react'
+import Link from 'next/link'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 
 interface Prediction {
   id: number
@@ -40,7 +46,7 @@ export default function PredictionsPage() {
   const [predictions, setPredictions] = useState<Prediction[]>([])
   const [stats, setStats] = useState<PredictionStats | null>(null)
   const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState<string>("all")
+  const [filter, setFilter] = useState<string>('all')
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
 
@@ -52,7 +58,7 @@ export default function PredictionsPage() {
         const [predictionsResponse, statsResponse] = await Promise.all([
           predictionsApi
             .getMyPredictions({
-              status: filter === "all" ? undefined : filter,
+              status: filter === 'all' ? undefined : filter,
               limit: itemsPerPage,
               offset: (currentPage - 1) * itemsPerPage,
             })
@@ -63,8 +69,8 @@ export default function PredictionsPage() {
               won_predictions: 0,
               lost_predictions: 0,
               pending_predictions: 0,
-              total_staked: "0",
-              total_winnings: "0",
+              total_staked: '0',
+              total_winnings: '0',
               win_rate: 0,
               profit_loss: 0,
             },
@@ -75,7 +81,7 @@ export default function PredictionsPage() {
         setTotalPages(Math.ceil((predictionsResponse.data.total || 0) / itemsPerPage))
         setStats(statsResponse.data)
       } catch (error) {
-        console.error("Error fetching predictions:", error)
+        console.error('Error fetching predictions:', error)
       } finally {
         setLoading(false)
       }
@@ -87,23 +93,23 @@ export default function PredictionsPage() {
   }, [user, filter, currentPage])
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     })
   }
 
   const getPredictionTypeLabel = (type: string) => {
     switch (type) {
-      case "HOME":
-        return "Home Win"
-      case "AWAY":
-        return "Away Win"
-      case "DRAW":
-        return "Draw"
+      case 'HOME':
+        return 'Home Win'
+      case 'AWAY':
+        return 'Away Win'
+      case 'DRAW':
+        return 'Draw'
       default:
         return type
     }
@@ -111,21 +117,21 @@ export default function PredictionsPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "WON":
-        return "default"
-      case "LOST":
-        return "destructive"
-      case "PENDING":
-        return "secondary"
-      case "CANCELLED":
-        return "outline"
+      case 'WON':
+        return 'default'
+      case 'LOST':
+        return 'destructive'
+      case 'PENDING':
+        return 'secondary'
+      case 'CANCELLED':
+        return 'outline'
       default:
-        return "secondary"
+        return 'secondary'
     }
   }
 
   const filteredPredictions = predictions.filter((prediction) => {
-    if (filter === "all") return true
+    if (filter === 'all') return true
     return prediction.status.toLowerCase() === filter.toLowerCase()
   })
 
@@ -181,7 +187,9 @@ export default function PredictionsPage() {
               <Target className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-primary">{stats?.win_rate?.toFixed(1) || 0}%</div>
+              <div className="text-2xl font-bold text-primary">
+                {stats?.win_rate?.toFixed(1) || 0}%
+              </div>
             </CardContent>
           </Card>
 
@@ -192,9 +200,9 @@ export default function PredictionsPage() {
             </CardHeader>
             <CardContent>
               <div
-                className={`text-2xl font-bold ${(stats?.profit_loss || 0) >= 0 ? "text-green-600" : "text-red-600"}`}
+                className={`text-2xl font-bold ${(stats?.profit_loss || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}
               >
-                ${stats?.profit_loss?.toFixed(2) || "0.00"}
+                ${stats?.profit_loss?.toFixed(2) || '0.00'}
               </div>
             </CardContent>
           </Card>
@@ -229,22 +237,34 @@ export default function PredictionsPage() {
             {filteredPredictions.length > 0 ? (
               <div className="space-y-4">
                 {filteredPredictions.map((prediction) => (
-                  <div key={prediction.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                  <div
+                    key={prediction.id}
+                    className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                  >
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                       <div className="flex-1">
                         <div className="font-semibold text-lg text-gray-900">
                           {prediction.home_team} vs {prediction.away_team}
                         </div>
                         <div className="text-sm text-gray-600 mt-1">
-                          {prediction.league_name} • {getPredictionTypeLabel(prediction.prediction_type)}
+                          {prediction.league_name} •{' '}
+                          {getPredictionTypeLabel(prediction.prediction_type)}
                         </div>
-                        <div className="text-xs text-gray-500 mt-1">Match: {formatDate(prediction.match_date)}</div>
-                        <div className="text-xs text-gray-500">Predicted: {formatDate(prediction.created_at)}</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          Match: {formatDate(prediction.match_date)}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          Predicted: {formatDate(prediction.created_at)}
+                        </div>
                       </div>
 
                       <div className="text-right">
-                        <div className="font-semibold text-gray-900">Stake: ${prediction.stake_amount}</div>
-                        <div className="text-sm text-gray-600">Potential: ${prediction.potential_winnings}</div>
+                        <div className="font-semibold text-gray-900">
+                          Stake: ${prediction.stake_amount}
+                        </div>
+                        <div className="text-sm text-gray-600">
+                          Potential: ${prediction.potential_winnings}
+                        </div>
                         <Badge variant={getStatusColor(prediction.status)} className="mt-2">
                           {prediction.status}
                         </Badge>
@@ -282,9 +302,9 @@ export default function PredictionsPage() {
               <div className="text-center py-8">
                 <Target className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-gray-600 mb-2">
-                  {filter === "all" ? "No predictions yet" : `No ${filter} predictions found`}
+                  {filter === 'all' ? 'No predictions yet' : `No ${filter} predictions found`}
                 </p>
-                <Button >
+                <Button>
                   <Link href="/matches">Make Your First Prediction</Link>
                 </Button>
               </div>

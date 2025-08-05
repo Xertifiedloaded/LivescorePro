@@ -1,13 +1,13 @@
-const axios = require("axios")
-const cron = require("node-cron")
-const { pool } = require("../config/database")
+const axios = require('axios')
+const cron = require('node-cron')
+const { pool } = require('../config/database')
 
 class FixtureService {
   constructor() {
     this.apiKey = process.env.FOOTBALL_API_KEY
-    this.apiUrl = process.env.FOOTBALL_API_URL || "https://api.football-data.org/v4"
+    this.apiUrl = process.env.FOOTBALL_API_URL || 'https://api.football-data.org/v4'
     this.headers = {
-      "X-Auth-Token": this.apiKey,
+      'X-Auth-Token': this.apiKey,
     }
   }
 
@@ -18,7 +18,7 @@ class FixtureService {
       })
       return response.data.areas
     } catch (error) {
-      console.error("Error fetching areas:", error.message)
+      console.error('Error fetching areas:', error.message)
       return []
     }
   }
@@ -35,7 +35,7 @@ class FixtureService {
       })
       return response.data.competitions
     } catch (error) {
-      console.error("Error fetching competitions:", error.message)
+      console.error('Error fetching competitions:', error.message)
       return []
     }
   }
@@ -52,8 +52,8 @@ class FixtureService {
       if (group) params.group = group
       if (season) params.season = season
       if (!dateFrom && !dateTo) {
-        params.dateFrom = new Date().toISOString().split("T")[0]
-        params.dateTo = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
+        params.dateFrom = new Date().toISOString().split('T')[0]
+        params.dateTo = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
       }
       const response = await axios.get(`${this.apiUrl}/competitions/${competitionId}/matches`, {
         headers: this.headers,
@@ -76,8 +76,8 @@ class FixtureService {
       if (dateTo) params.dateTo = dateTo
       if (status) params.status = status
       if (!dateFrom && !dateTo && !competitions) {
-        params.dateFrom = new Date().toISOString().split("T")[0]
-        params.dateTo = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
+        params.dateFrom = new Date().toISOString().split('T')[0]
+        params.dateTo = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
       }
       const response = await axios.get(`${this.apiUrl}/matches`, {
         headers: this.headers,
@@ -85,7 +85,7 @@ class FixtureService {
       })
       return response.data.matches
     } catch (error) {
-      console.error("Error fetching matches across competitions:", error.message)
+      console.error('Error fetching matches across competitions:', error.message)
       return []
     }
   }
@@ -129,7 +129,7 @@ class FixtureService {
       })
       return response.data
     } catch (error) {
-      console.error("Error fetching all teams:", error.message)
+      console.error('Error fetching all teams:', error.message)
       return { teams: [], count: 0 }
     }
   }
@@ -244,11 +244,11 @@ class FixtureService {
           flag = EXCLUDED.flag
         RETURNING id
       `,
-        [area.id, area.name, area.code, area.flag],
+        [area.id, area.name, area.code, area.flag]
       )
       return result.rows[0].id
     } catch (error) {
-      console.error("Error saving area:", error)
+      console.error('Error saving area:', error)
       return null
     }
   }
@@ -274,18 +274,19 @@ class FixtureService {
         [
           competition.id,
           competition.name,
-          competition.area?.name || "International",
-          competition.currentSeason?.startDate?.substring(0, 4) || new Date().getFullYear().toString(),
+          competition.area?.name || 'International',
+          competition.currentSeason?.startDate?.substring(0, 4) ||
+            new Date().getFullYear().toString(),
           competition.code,
           competition.type,
           competition.emblem,
           competition.plan,
           true,
-        ],
+        ]
       )
       return result.rows[0].id
     } catch (error) {
-      console.error("Error saving league:", error)
+      console.error('Error saving league:', error)
       return null
     }
   }
@@ -322,11 +323,11 @@ class FixtureService {
           team.clubColors,
           team.venue,
           team.area?.name,
-        ],
+        ]
       )
       return result.rows[0].id
     } catch (error) {
-      console.error("Error saving team:", error)
+      console.error('Error saving team:', error)
       return null
     }
   }
@@ -376,26 +377,26 @@ class FixtureService {
           match.venue,
           match.referees?.[0]?.name,
           match.attendance,
-        ],
+        ]
       )
     } catch (error) {
-      console.error("Error saving match:", error)
+      console.error('Error saving match:', error)
     }
   }
 
   mapMatchStatus(apiStatus) {
     const statusMap = {
-      SCHEDULED: "SCHEDULED",
-      TIMED: "SCHEDULED",
-      LIVE: "IN_PLAY",
-      IN_PLAY: "IN_PLAY",
-      PAUSED: "PAUSED",
-      FINISHED: "FINISHED",
-      POSTPONED: "POSTPONED",
-      SUSPENDED: "POSTPONED",
-      CANCELLED: "CANCELLED",
+      SCHEDULED: 'SCHEDULED',
+      TIMED: 'SCHEDULED',
+      LIVE: 'IN_PLAY',
+      IN_PLAY: 'IN_PLAY',
+      PAUSED: 'PAUSED',
+      FINISHED: 'FINISHED',
+      POSTPONED: 'POSTPONED',
+      SUSPENDED: 'POSTPONED',
+      CANCELLED: 'CANCELLED',
     }
-    return statusMap[apiStatus] || "SCHEDULED"
+    return statusMap[apiStatus] || 'SCHEDULED'
   }
 
   generateSimpleOdds() {
@@ -407,9 +408,21 @@ class FixtureService {
   }
 
   async syncFixtures() {
-    console.log("Starting fixture synchronization...")
+    console.log('Starting fixture synchronization...')
     try {
-      const competitionCodes = ["PL", "PD", "BL1", "SA", "FL1", "CL", "EC", "WC", "ELC", "PPL", "DED"]
+      const competitionCodes = [
+        'PL',
+        'PD',
+        'BL1',
+        'SA',
+        'FL1',
+        'CL',
+        'EC',
+        'WC',
+        'ELC',
+        'PPL',
+        'DED',
+      ]
 
       const allCompetitions = await this.fetchCompetitions()
       const competitionMap = {}
@@ -434,9 +447,9 @@ class FixtureService {
           }
 
           const matchOptions = {
-            status: "SCHEDULED,LIVE,IN_PLAY,PAUSED",
-            dateFrom: new Date().toISOString().split("T")[0],
-            dateTo: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+            status: 'SCHEDULED,LIVE,IN_PLAY,PAUSED',
+            dateFrom: new Date().toISOString().split('T')[0],
+            dateTo: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
           }
           const matches = await this.fetchMatches(competition.id, matchOptions)
           for (const match of matches) {
@@ -449,14 +462,14 @@ class FixtureService {
           console.error(`Error syncing competition ${code}:`, error.message)
         }
       }
-      console.log("Fixture synchronization completed")
+      console.log('Fixture synchronization completed')
     } catch (error) {
-      console.error("Error in fixture synchronization:", error)
+      console.error('Error in fixture synchronization:', error)
     }
   }
 
   async updateMatchResults() {
-    console.log("Updating match results...")
+    console.log('Updating match results...')
     try {
       const result = await pool.query(`
         SELECT DISTINCT external_id 
@@ -482,10 +495,10 @@ class FixtureService {
               matchData.score?.fullTime?.away || null,
               matchData.attendance || null,
               match.external_id,
-            ],
+            ]
           )
 
-          if (matchData.status === "FINISHED") {
+          if (matchData.status === 'FINISHED') {
             await this.updatePredictionResults(match.external_id, matchData)
           }
 
@@ -494,22 +507,22 @@ class FixtureService {
           console.error(`Error updating match ${match.external_id}:`, error.message)
         }
       }
-      console.log("Match results update completed")
+      console.log('Match results update completed')
     } catch (error) {
-      console.error("Error updating match results:", error)
+      console.error('Error updating match results:', error)
     }
   }
 
   async getLiveMatches() {
     try {
       const liveMatches = await this.fetchMatchesAcrossCompetitions({
-        status: "LIVE,IN_PLAY,PAUSED",
-        dateFrom: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-        dateTo: new Date().toISOString().split("T")[0],
+        status: 'LIVE,IN_PLAY,PAUSED',
+        dateFrom: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        dateTo: new Date().toISOString().split('T')[0],
       })
       return liveMatches
     } catch (error) {
-      console.error("Error fetching live matches:", error)
+      console.error('Error fetching live matches:', error)
       return []
     }
   }
@@ -517,49 +530,54 @@ class FixtureService {
   async updatePredictionResults(externalMatchId, matchData) {
     const client = await pool.connect()
     try {
-      await client.query("BEGIN")
-      const matchResult = await client.query("SELECT id FROM matches WHERE external_id = $1", [externalMatchId])
+      await client.query('BEGIN')
+      const matchResult = await client.query('SELECT id FROM matches WHERE external_id = $1', [
+        externalMatchId,
+      ])
       if (matchResult.rows.length === 0) {
-        await client.query("ROLLBACK")
+        await client.query('ROLLBACK')
         return
       }
       const match = matchResult.rows[0]
       const homeScore = matchData.score?.fullTime?.home
       const awayScore = matchData.score?.fullTime?.away
       if (homeScore === null || awayScore === null) {
-        await client.query("ROLLBACK")
+        await client.query('ROLLBACK')
         return
       }
 
       let outcome
       if (homeScore > awayScore) {
-        outcome = "HOME"
+        outcome = 'HOME'
       } else if (homeScore < awayScore) {
-        outcome = "AWAY"
+        outcome = 'AWAY'
       } else {
-        outcome = "DRAW"
+        outcome = 'DRAW'
       }
 
       const predictions = await client.query(
-        "SELECT id, user_id, prediction_type, potential_winnings FROM predictions WHERE match_id = $1 AND status = $2",
-        [match.id, "PENDING"],
+        'SELECT id, user_id, prediction_type, potential_winnings FROM predictions WHERE match_id = $1 AND status = $2',
+        [match.id, 'PENDING']
       )
       for (const prediction of predictions.rows) {
         const isWinner = prediction.prediction_type === outcome
-        const newStatus = isWinner ? "WON" : "LOST"
-        await client.query("UPDATE predictions SET status = $1 WHERE id = $2", [newStatus, prediction.id])
+        const newStatus = isWinner ? 'WON' : 'LOST'
+        await client.query('UPDATE predictions SET status = $1 WHERE id = $2', [
+          newStatus,
+          prediction.id,
+        ])
         if (isWinner) {
-          await client.query("UPDATE users SET balance = balance + $1 WHERE id = $2", [
+          await client.query('UPDATE users SET balance = balance + $1 WHERE id = $2', [
             prediction.potential_winnings,
             prediction.user_id,
           ])
         }
       }
-      await client.query("COMMIT")
+      await client.query('COMMIT')
       console.log(`Updated ${predictions.rows.length} predictions for match ${externalMatchId}`)
     } catch (error) {
-      await client.query("ROLLBACK")
-      console.error("Error updating prediction results:", error)
+      await client.query('ROLLBACK')
+      console.error('Error updating prediction results:', error)
     } finally {
       client.release()
     }
@@ -569,19 +587,19 @@ class FixtureService {
 const fixtureService = new FixtureService()
 
 function startFixtureSync() {
-  cron.schedule("0 */6 * * *", () => {
+  cron.schedule('0 */6 * * *', () => {
     fixtureService.syncFixtures()
   })
 
-  cron.schedule("*/30 * * * *", () => {
+  cron.schedule('*/30 * * * *', () => {
     fixtureService.updateMatchResults()
   })
 
   setTimeout(() => {
-    console.log("Starting initial fixture sync...")
+    console.log('Starting initial fixture sync...')
     fixtureService.syncFixtures()
   }, 30000)
-  console.log("Fixture synchronization cron jobs started")
+  console.log('Fixture synchronization cron jobs started')
 }
 
 module.exports = {

@@ -1,30 +1,29 @@
-const { Pool } = require("pg")
+const { Pool } = require('pg')
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false,
   },
-});
-
-
-pool.on("connect", () => {
-  console.log("Connected to PostgreSQL database")
 })
 
-pool.on("error", (err) => {
-  console.error("Database connection error:", err)
+pool.on('connect', () => {
+  console.log('Connected to PostgreSQL database')
+})
+
+pool.on('error', (err) => {
+  console.error('Database connection error:', err)
 })
 
 async function testConnection() {
   try {
     const client = await pool.connect()
-    const result = await client.query("SELECT NOW()")
-    console.log("Database connection test successful:", result.rows[0])
+    const result = await client.query('SELECT NOW()')
+    console.log('Database connection test successful:', result.rows[0])
     client.release()
     return true
   } catch (error) {
-    console.error("Database connection test failed:", error.message)
+    console.error('Database connection test failed:', error.message)
     return false
   }
 }
@@ -32,13 +31,13 @@ async function testConnection() {
 async function initializeDatabase() {
   const isConnected = await testConnection()
   if (!isConnected) {
-    throw new Error("Cannot connect to database. Please check your configuration.")
+    throw new Error('Cannot connect to database. Please check your configuration.')
   }
 
   const client = await pool.connect()
 
   try {
-    console.log("Creating database tables...")
+    console.log('Creating database tables...')
 
     await client.query(`
       CREATE TABLE IF NOT EXISTS areas (
@@ -50,7 +49,6 @@ async function initializeDatabase() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `)
-
 
     await client.query(`
       CREATE TABLE IF NOT EXISTS teams (
@@ -190,18 +188,17 @@ async function initializeDatabase() {
       ON CONFLICT (external_id) DO NOTHING
     `)
 
-    console.log("Database tables created successfully")
+    console.log('Database tables created successfully')
   } finally {
     client.release()
   }
 }
 
-
 async function migrateDatabase() {
   const client = await pool.connect()
 
   try {
-    console.log("Running database migrations...")
+    console.log('Running database migrations...')
 
     const tablesResult = await client.query(`
       SELECT table_name 
@@ -211,15 +208,15 @@ async function migrateDatabase() {
     `)
 
     const existingTables = tablesResult.rows.map((row) => row.table_name)
-    console.log("Existing tables:", existingTables)
+    console.log('Existing tables:', existingTables)
 
-    if (existingTables.includes("leagues")) {
+    if (existingTables.includes('leagues')) {
       const leagueColumns = [
-        "ALTER TABLE leagues ADD COLUMN IF NOT EXISTS code VARCHAR(10)",
-        "ALTER TABLE leagues ADD COLUMN IF NOT EXISTS type VARCHAR(50)",
-        "ALTER TABLE leagues ADD COLUMN IF NOT EXISTS emblem VARCHAR(255)",
-        "ALTER TABLE leagues ADD COLUMN IF NOT EXISTS plan VARCHAR(20)",
-        "ALTER TABLE leagues ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+        'ALTER TABLE leagues ADD COLUMN IF NOT EXISTS code VARCHAR(10)',
+        'ALTER TABLE leagues ADD COLUMN IF NOT EXISTS type VARCHAR(50)',
+        'ALTER TABLE leagues ADD COLUMN IF NOT EXISTS emblem VARCHAR(255)',
+        'ALTER TABLE leagues ADD COLUMN IF NOT EXISTS plan VARCHAR(20)',
+        'ALTER TABLE leagues ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
       ]
 
       for (const sql of leagueColumns) {
@@ -231,16 +228,16 @@ async function migrateDatabase() {
       }
     }
 
-    if (existingTables.includes("matches")) {
+    if (existingTables.includes('matches')) {
       const matchColumns = [
-        "ALTER TABLE matches ADD COLUMN IF NOT EXISTS matchday INTEGER",
-        "ALTER TABLE matches ADD COLUMN IF NOT EXISTS stage VARCHAR(50)",
-        "ALTER TABLE matches ADD COLUMN IF NOT EXISTS group_name VARCHAR(50)",
-        "ALTER TABLE matches ADD COLUMN IF NOT EXISTS venue VARCHAR(100)",
-        "ALTER TABLE matches ADD COLUMN IF NOT EXISTS referee VARCHAR(100)",
-        "ALTER TABLE matches ADD COLUMN IF NOT EXISTS attendance INTEGER",
-        "ALTER TABLE matches ADD COLUMN IF NOT EXISTS home_team_id INTEGER",
-        "ALTER TABLE matches ADD COLUMN IF NOT EXISTS away_team_id INTEGER",
+        'ALTER TABLE matches ADD COLUMN IF NOT EXISTS matchday INTEGER',
+        'ALTER TABLE matches ADD COLUMN IF NOT EXISTS stage VARCHAR(50)',
+        'ALTER TABLE matches ADD COLUMN IF NOT EXISTS group_name VARCHAR(50)',
+        'ALTER TABLE matches ADD COLUMN IF NOT EXISTS venue VARCHAR(100)',
+        'ALTER TABLE matches ADD COLUMN IF NOT EXISTS referee VARCHAR(100)',
+        'ALTER TABLE matches ADD COLUMN IF NOT EXISTS attendance INTEGER',
+        'ALTER TABLE matches ADD COLUMN IF NOT EXISTS home_team_id INTEGER',
+        'ALTER TABLE matches ADD COLUMN IF NOT EXISTS away_team_id INTEGER',
       ]
 
       for (const sql of matchColumns) {
@@ -252,9 +249,9 @@ async function migrateDatabase() {
       }
     }
 
-    console.log("Database migrations completed successfully")
+    console.log('Database migrations completed successfully')
   } catch (error) {
-    console.error("Migration error:", error.message)
+    console.error('Migration error:', error.message)
     // Don't throw error, just log it
   } finally {
     client.release()

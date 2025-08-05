@@ -1,25 +1,25 @@
-const express = require("express")
-const { body, validationResult } = require("express-validator")
-const { pool } = require("../config/database")
-const { authenticateToken } = require("../middleware/auth")
+const express = require('express')
+const { body, validationResult } = require('express-validator')
+const { pool } = require('../config/database')
+const { authenticateToken } = require('../middleware/auth')
 const router = express.Router()
 router.post(
-  "/",
+  '/',
   authenticateToken,
   [
-    body("matchId").isInt({ min: 1 }),
-    body("predictionType").isIn(["HOME", "DRAW", "AWAY"]),
-    body("stakeAmount").isFloat({ min: 0.01, max: 10000 }),
+    body('matchId').isInt({ min: 1 }),
+    body('predictionType').isIn(['HOME', 'DRAW', 'AWAY']),
+    body('stakeAmount').isFloat({ min: 0.01, max: 10000 }),
   ],
   async (req, res) => {
     const client = await pool.connect()
 
     try {
-      await client.query("BEGIN")
+      await client.query('BEGIN')
 
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        await client.query("ROLLBACK")
+        await client.query('ROLLBACK')
         return res.status(400).json({ errors: errors.array() })
       }
 
@@ -31,49 +31,49 @@ router.post(
       FROM matches 
       WHERE id = $1 AND status = 'SCHEDULED' AND match_date > NOW()
     `,
-        [matchId],
+        [matchId]
       )
 
       if (matchResult.rows.length === 0) {
-        await client.query("ROLLBACK")
-        return res.status(400).json({ error: "Match not available for betting" })
+        await client.query('ROLLBACK')
+        return res.status(400).json({ error: 'Match not available for betting' })
       }
 
       const match = matchResult.rows[0]
-      const existingPrediction = await client.query("SELECT id FROM predictions WHERE user_id = $1 AND match_id = $2", [
-        userId,
-        matchId,
-      ])
+      const existingPrediction = await client.query(
+        'SELECT id FROM predictions WHERE user_id = $1 AND match_id = $2',
+        [userId, matchId]
+      )
 
       if (existingPrediction.rows.length > 0) {
-        await client.query("ROLLBACK")
-        return res.status(400).json({ error: "You already have a prediction for this match" })
+        await client.query('ROLLBACK')
+        return res.status(400).json({ error: 'You already have a prediction for this match' })
       }
 
-      const userResult = await client.query("SELECT balance FROM users WHERE id = $1", [userId])
+      const userResult = await client.query('SELECT balance FROM users WHERE id = $1', [userId])
 
       const userBalance = Number.parseFloat(userResult.rows[0].balance)
 
       if (userBalance < Number.parseFloat(stakeAmount)) {
-        await client.query("ROLLBACK")
-        return res.status(400).json({ error: "Insufficient balance" })
+        await client.query('ROLLBACK')
+        return res.status(400).json({ error: 'Insufficient balance' })
       }
       let odds
       switch (predictionType) {
-        case "HOME":
+        case 'HOME':
           odds = match.odds_home
           break
-        case "DRAW":
+        case 'DRAW':
           odds = match.odds_draw
           break
-        case "AWAY":
+        case 'AWAY':
           odds = match.odds_away
           break
       }
 
       if (!odds) {
-        await client.query("ROLLBACK")
-        return res.status(400).json({ error: "Odds not available for this prediction type" })
+        await client.query('ROLLBACK')
+        return res.status(400).json({ error: 'Odds not available for this prediction type' })
       }
 
       const potentialWinnings = Number.parseFloat(stakeAmount) * Number.parseFloat(odds)
@@ -83,28 +83,31 @@ router.post(
       VALUES ($1, $2, $3, $4, $5) 
       RETURNING *
     `,
-        [userId, matchId, predictionType, stakeAmount, potentialWinnings],
+        [userId, matchId, predictionType, stakeAmount, potentialWinnings]
       )
-      await client.query("UPDATE users SET balance = balance - $1 WHERE id = $2", [stakeAmount, userId])
+      await client.query('UPDATE users SET balance = balance - $1 WHERE id = $2', [
+        stakeAmount,
+        userId,
+      ])
 
-      await client.query("COMMIT")
+      await client.query('COMMIT')
 
       res.status(201).json({
-        message: "Prediction created successfully",
+        message: 'Prediction created successfully',
         prediction: predictionResult.rows[0],
       })
     } catch (error) {
-      await client.query("ROLLBACK")
-      console.error("Create prediction error:", error)
-      res.status(500).json({ error: "Failed to create prediction" })
+      await client.query('ROLLBACK')
+      console.error('Create prediction error:', error)
+      res.status(500).json({ error: 'Failed to create prediction' })
     } finally {
       client.release()
     }
-  },
+  }
 )
 
 // Get user's predictions
-router.get("/my", authenticateToken, async (req, res) => {
+router.get('/my', authenticateToken, async (req, res) => {
   try {
     const { status, limit = 20, offset = 0 } = req.query
     const userId = req.user.id
@@ -138,13 +141,13 @@ router.get("/my", authenticateToken, async (req, res) => {
       },
     })
   } catch (error) {
-    console.error("Fetch predictions error:", error)
-    res.status(500).json({ error: "Failed to fetch predictions" })
+    console.error('Fetch predictions error:', error)
+    res.status(500).json({ error: 'Failed to fetch predictions' })
   }
 })
 
 // Get prediction statistics
-router.get("/stats", authenticateToken, async (req, res) => {
+router.get('/stats', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id
 
@@ -160,25 +163,29 @@ router.get("/stats", authenticateToken, async (req, res) => {
       FROM predictions 
       WHERE user_id = $1
     `,
-      [userId],
+      [userId]
     )
 
     const stats = statsResult.rows[0]
     const winRate =
       stats.total_predictions > 0
-        ? ((stats.won_predictions / (stats.won_predictions + stats.lost_predictions)) * 100).toFixed(2)
+        ? (
+            (stats.won_predictions / (stats.won_predictions + stats.lost_predictions)) *
+            100
+          ).toFixed(2)
         : 0
 
     res.json({
       stats: {
         ...stats,
         win_rate: Number.parseFloat(winRate),
-        profit_loss: Number.parseFloat(stats.total_winnings) - Number.parseFloat(stats.total_staked),
+        profit_loss:
+          Number.parseFloat(stats.total_winnings) - Number.parseFloat(stats.total_staked),
       },
     })
   } catch (error) {
-    console.error("Fetch prediction stats error:", error)
-    res.status(500).json({ error: "Failed to fetch prediction statistics" })
+    console.error('Fetch prediction stats error:', error)
+    res.status(500).json({ error: 'Failed to fetch prediction statistics' })
   }
 })
 

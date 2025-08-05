@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useEffect } from "react"
-import { useRouter } from "next/router"
-import { useAuth } from "@/contexts/AuthContext"
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -16,7 +16,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/auth/login")
+      router.push('/auth/login')
     }
   }, [user, isLoading, router])
 

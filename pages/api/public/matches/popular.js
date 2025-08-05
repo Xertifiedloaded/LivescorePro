@@ -1,13 +1,13 @@
-import { pool } from "../../../../lib/database"
-import { errorHandler } from "../../../../lib/middleware"
+import { pool } from '../../../../lib/database'
+import { errorHandler } from '../../../../lib/middleware'
 
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" })
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' })
   }
 
   try {
-    const popularLeagueCodes = ["PL", "PD", "BL1", "SA", "FL1", "CL"]
+    const popularLeagueCodes = ['PL', 'PD', 'BL1', 'SA', 'FL1', 'CL']
 
     const result = await pool.query(
       `
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
       ORDER BY l.code, m.match_date ASC
       LIMIT 50
     `,
-      [popularLeagueCodes],
+      [popularLeagueCodes]
     )
 
     // Group by league

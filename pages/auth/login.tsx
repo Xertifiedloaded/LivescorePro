@@ -1,39 +1,39 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState } from "react"
-import { useRouter } from "next/router"
-import Link from "next/link"
-import { useAuth } from "@/contexts/AuthContext"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Eye, EyeOff, Mail, Lock, LogIn, ArrowLeft } from "lucide-react"
+import { useState } from 'react'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+import { useAuth } from '@/contexts/AuthContext'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Eye, EyeOff, Mail, Lock, LogIn, ArrowLeft } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
   const { login } = useAuth()
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   })
   const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState("")
+  const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError("")
+    setError('')
     setIsLoading(true)
 
     try {
       await login(formData.email, formData.password)
-      router.push("/dashboard")
+      router.push('/dashboard')
     } catch (err) {
-      setError("Invalid email or password")
+      setError('Invalid email or password')
     } finally {
       setIsLoading(false)
     }
@@ -52,9 +52,9 @@ export default function LoginPage() {
       <div className="flex flex-col min-h-screen">
         {/* Header with back button - optimized for mobile */}
         <div className="flex-shrink-0 p-4 sm:p-6">
-          <Button 
-            variant="ghost" 
-            className="p-2 sm:p-3 -ml-2 sm:-ml-3 hover:bg-slate-100 rounded-lg" 
+          <Button
+            variant="ghost"
+            className="p-2 sm:p-3 -ml-2 sm:-ml-3 hover:bg-slate-100 rounded-lg"
             asChild
           >
             <Link href="/" className="flex items-center">
@@ -118,7 +118,7 @@ export default function LoginPage() {
                       <Input
                         id="password"
                         name="password"
-                        type={showPassword ? "text" : "password"}
+                        type={showPassword ? 'text' : 'password'}
                         placeholder="Enter your password"
                         value={formData.password}
                         onChange={handleChange}
@@ -130,9 +130,13 @@ export default function LoginPage() {
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:text-primary transition-colors"
-                        aria-label={showPassword ? "Hide password" : "Show password"}
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
                       >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -148,8 +152,8 @@ export default function LoginPage() {
                         Remember me
                       </Label>
                     </div>
-                    <Link 
-                      href="/auth/forgot-password" 
+                    <Link
+                      href="/auth/forgot-password"
                       className="text-sm text-primary hover:underline font-medium focus:outline-none focus:underline transition-colors self-start sm:self-auto"
                     >
                       Forgot password?
@@ -163,23 +167,39 @@ export default function LoginPage() {
                   >
                     {isLoading ? (
                       <span className="flex items-center">
-                        <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <svg
+                          className="animate-spin -ml-1 mr-3 h-4 w-4 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
                         </svg>
                         Signing in...
                       </span>
                     ) : (
-                      "Sign In"
+                      'Sign In'
                     )}
                   </Button>
                 </form>
 
                 <div className="text-center mt-6 sm:mt-8 pt-4 border-t border-gray-100">
                   <p className="text-gray-600 text-sm sm:text-base">
-                    Don't have an account?{" "}
-                    <Link 
-                      href="/auth/register" 
+                    Don't have an account?{' '}
+                    <Link
+                      href="/auth/register"
                       className="text-primary font-semibold hover:underline focus:outline-none focus:underline transition-colors"
                     >
                       Sign up

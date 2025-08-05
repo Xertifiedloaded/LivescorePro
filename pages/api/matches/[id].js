@@ -1,9 +1,9 @@
-import { pool } from "../../../lib/database"
-import { errorHandler } from "../../../lib/middleware"
+import { pool } from '../../../lib/database'
+import { errorHandler } from '../../../lib/middleware'
 
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" })
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' })
   }
 
   try {
@@ -17,16 +17,19 @@ export default async function handler(req, res) {
       LEFT JOIN leagues l ON m.league_id = l.id 
       WHERE m.id = $1
     `,
-      [id],
+      [id]
     )
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Match not found" })
+      return res.status(404).json({ error: 'Match not found' })
     }
 
     const match = result.rows[0]
 
-    const predictionCount = await pool.query("SELECT COUNT(*) as count FROM predictions WHERE match_id = $1", [id])
+    const predictionCount = await pool.query(
+      'SELECT COUNT(*) as count FROM predictions WHERE match_id = $1',
+      [id]
+    )
 
     match.prediction_count = Number.parseInt(predictionCount.rows[0].count)
 

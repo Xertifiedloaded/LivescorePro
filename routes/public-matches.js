@@ -1,10 +1,10 @@
-const express = require("express")
-const { pool } = require("../config/database")
+const express = require('express')
+const { pool } = require('../config/database')
 
 const router = express.Router()
 
 // Get today's matches
-router.get("/today", async (req, res) => {
+router.get('/today', async (req, res) => {
   try {
     const today = new Date()
     const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate())
@@ -19,12 +19,12 @@ router.get("/today", async (req, res) => {
       WHERE m.match_date >= $1 AND m.match_date < $2
       ORDER BY m.match_date ASC
     `,
-      [startOfDay, endOfDay],
+      [startOfDay, endOfDay]
     )
 
     res.json({
       matches: result.rows,
-      date: today.toISOString().split("T")[0],
+      date: today.toISOString().split('T')[0],
       count: result.rows.length,
     })
   } catch (error) {
@@ -34,7 +34,7 @@ router.get("/today", async (req, res) => {
 })
 
 // Get this week's matches
-router.get("/week", async (req, res) => {
+router.get('/week', async (req, res) => {
   try {
     const today = new Date()
     const weekFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000)
@@ -49,24 +49,24 @@ router.get("/week", async (req, res) => {
       AND m.status = 'SCHEDULED'
       ORDER BY m.match_date ASC
     `,
-      [today, weekFromNow],
+      [today, weekFromNow]
     )
 
     res.json({
       matches: result.rows,
-      period: "next_7_days",
+      period: 'next_7_days',
       count: result.rows.length,
     })
   } catch (error) {
-    console.error("Fetch week matches error:", error)
-    res.status(500).json({ error: "Failed to fetch week matches" })
+    console.error('Fetch week matches error:', error)
+    res.status(500).json({ error: 'Failed to fetch week matches' })
   }
 })
 
 // Get popular leagues with upcoming matches
-router.get("/popular", async (req, res) => {
+router.get('/popular', async (req, res) => {
   try {
-    const popularLeagueCodes = ["PL", "PD", "BL1", "SA", "FL1", "CL"]
+    const popularLeagueCodes = ['PL', 'PD', 'BL1', 'SA', 'FL1', 'CL']
 
     const result = await pool.query(
       `
@@ -80,7 +80,7 @@ router.get("/popular", async (req, res) => {
       ORDER BY l.code, m.match_date ASC
       LIMIT 50
     `,
-      [popularLeagueCodes],
+      [popularLeagueCodes]
     )
 
     // Group by league
@@ -106,13 +106,13 @@ router.get("/popular", async (req, res) => {
       total_matches: result.rows.length,
     })
   } catch (error) {
-    console.error("Fetch popular matches error:", error)
-    res.status(500).json({ error: "Failed to fetch popular matches" })
+    console.error('Fetch popular matches error:', error)
+    res.status(500).json({ error: 'Failed to fetch popular matches' })
   }
 })
 
 // Get match statistics (public stats)
-router.get("/stats", async (req, res) => {
+router.get('/stats', async (req, res) => {
   try {
     const stats = await pool.query(`
       SELECT 
@@ -136,8 +136,8 @@ router.get("/stats", async (req, res) => {
       last_updated: new Date().toISOString(),
     })
   } catch (error) {
-    console.error("Fetch match stats error:", error)
-    res.status(500).json({ error: "Failed to fetch match statistics" })
+    console.error('Fetch match stats error:', error)
+    res.status(500).json({ error: 'Failed to fetch match statistics' })
   }
 })
 

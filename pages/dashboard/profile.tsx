@@ -1,18 +1,18 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState, useEffect } from "react"
-import { useAuth } from "@/contexts/AuthContext"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { usersApi } from "@/lib/api"
-import { User, Settings, CreditCard, Shield, AlertCircle, CheckCircle } from "lucide-react"
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute"
+import { useState, useEffect } from 'react'
+import { useAuth } from '@/contexts/AuthContext'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { usersApi } from '@/lib/api'
+import { User, Settings, CreditCard, Shield, AlertCircle, CheckCircle } from 'lucide-react'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 
 interface UserBalance {
   balance: number
@@ -23,14 +23,14 @@ export default function ProfilePage() {
   const [balance, setBalance] = useState<number>(0)
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const [profileForm, setProfileForm] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
+    firstName: '',
+    lastName: '',
+    email: '',
   })
-  const [fundAmount, setFundAmount] = useState("")
+  const [fundAmount, setFundAmount] = useState('')
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -38,7 +38,7 @@ export default function ProfilePage() {
         const response = await usersApi.getBalance()
         setBalance(response.data.balance || 0)
       } catch (error) {
-        console.error("Error fetching balance:", error)
+        console.error('Error fetching balance:', error)
         setBalance(0)
       } finally {
         setLoading(false)
@@ -47,9 +47,9 @@ export default function ProfilePage() {
 
     if (user) {
       setProfileForm({
-        firstName: user.firstName || "",
-        lastName: user.lastName || "",
-        email: user.email || "",
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
       })
       fetchBalance()
     }
@@ -62,9 +62,9 @@ export default function ProfilePage() {
 
     try {
       await usersApi.updateProfile(profileForm)
-      setMessage({ type: "success", text: "Profile updated successfully!" })
+      setMessage({ type: 'success', text: 'Profile updated successfully!' })
     } catch (error) {
-      setMessage({ type: "error", text: "Failed to update profile. Please try again." })
+      setMessage({ type: 'error', text: 'Failed to update profile. Please try again.' })
     } finally {
       setUpdating(false)
     }
@@ -76,13 +76,16 @@ export default function ProfilePage() {
 
     try {
       await usersApi.addFunds(amount)
-      setMessage({ type: "success", text: `Successfully added $${amount.toFixed(2)} to your account!` })
+      setMessage({
+        type: 'success',
+        text: `Successfully added $${amount.toFixed(2)} to your account!`,
+      })
 
       // Refresh balance
       const response = await usersApi.getBalance()
       setBalance(response.data.balance || 0)
     } catch (error) {
-      setMessage({ type: "error", text: "Failed to add funds. Please try again." })
+      setMessage({ type: 'error', text: 'Failed to add funds. Please try again.' })
     } finally {
       setUpdating(false)
     }
@@ -93,12 +96,12 @@ export default function ProfilePage() {
     const amount = Number.parseFloat(fundAmount)
 
     if (amount <= 0) {
-      setMessage({ type: "error", text: "Please enter a valid amount." })
+      setMessage({ type: 'error', text: 'Please enter a valid amount.' })
       return
     }
 
     await handleAddFunds(amount)
-    setFundAmount("")
+    setFundAmount('')
   }
 
   if (loading) {
@@ -125,10 +128,16 @@ export default function ProfilePage() {
 
         {message && (
           <Alert
-            className={`mb-6 ${message.type === "error" ? "border-red-200 bg-red-50" : "border-green-200 bg-green-50"}`}
+            className={`mb-6 ${message.type === 'error' ? 'border-red-200 bg-red-50' : 'border-green-200 bg-green-50'}`}
           >
-            {message.type === "error" ? <AlertCircle className="h-4 w-4" /> : <CheckCircle className="h-4 w-4" />}
-            <AlertDescription className={message.type === "error" ? "text-red-800" : "text-green-800"}>
+            {message.type === 'error' ? (
+              <AlertCircle className="h-4 w-4" />
+            ) : (
+              <CheckCircle className="h-4 w-4" />
+            )}
+            <AlertDescription
+              className={message.type === 'error' ? 'text-red-800' : 'text-green-800'}
+            >
               {message.text}
             </AlertDescription>
           </Alert>
@@ -187,7 +196,9 @@ export default function ProfilePage() {
                           <Input
                             id="firstName"
                             value={profileForm.firstName}
-                            onChange={(e) => setProfileForm((prev) => ({ ...prev, firstName: e.target.value }))}
+                            onChange={(e) =>
+                              setProfileForm((prev) => ({ ...prev, firstName: e.target.value }))
+                            }
                             placeholder="Enter your first name"
                           />
                         </div>
@@ -196,7 +207,9 @@ export default function ProfilePage() {
                           <Input
                             id="lastName"
                             value={profileForm.lastName}
-                            onChange={(e) => setProfileForm((prev) => ({ ...prev, lastName: e.target.value }))}
+                            onChange={(e) =>
+                              setProfileForm((prev) => ({ ...prev, lastName: e.target.value }))
+                            }
                             placeholder="Enter your last name"
                           />
                         </div>
@@ -207,12 +220,14 @@ export default function ProfilePage() {
                           id="email"
                           type="email"
                           value={profileForm.email}
-                          onChange={(e) => setProfileForm((prev) => ({ ...prev, email: e.target.value }))}
+                          onChange={(e) =>
+                            setProfileForm((prev) => ({ ...prev, email: e.target.value }))
+                          }
                           placeholder="Enter your email"
                         />
                       </div>
                       <Button type="submit" disabled={updating}>
-                        {updating ? "Updating..." : "Update Profile"}
+                        {updating ? 'Updating...' : 'Update Profile'}
                       </Button>
                     </form>
                   </CardContent>
@@ -260,7 +275,7 @@ export default function ProfilePage() {
                           onChange={(e) => setFundAmount(e.target.value)}
                         />
                         <Button type="submit" disabled={updating || !fundAmount}>
-                          {updating ? "Adding..." : "Add Funds"}
+                          {updating ? 'Adding...' : 'Add Funds'}
                         </Button>
                       </div>
                     </form>
@@ -279,23 +294,29 @@ export default function ProfilePage() {
                   <CardContent className="space-y-4">
                     <div className="p-4 border rounded-lg">
                       <h4 className="font-medium mb-2">Password</h4>
-                      <p className="text-sm text-gray-600 mb-3">Keep your account secure with a strong password</p>
+                      <p className="text-sm text-gray-600 mb-3">
+                        Keep your account secure with a strong password
+                      </p>
                       <Button variant="outline">Change Password</Button>
                     </div>
 
                     <div className="p-4 border rounded-lg">
                       <h4 className="font-medium mb-2">Two-Factor Authentication</h4>
-                      <p className="text-sm text-gray-600 mb-3">Add an extra layer of security to your account</p>
+                      <p className="text-sm text-gray-600 mb-3">
+                        Add an extra layer of security to your account
+                      </p>
                       <Button variant="outline">Enable 2FA</Button>
                     </div>
 
                     <div className="p-4 border rounded-lg border-red-200">
                       <h4 className="font-medium mb-2 text-red-600">Danger Zone</h4>
-                      <p className="text-sm text-gray-600 mb-3">Permanently delete your account and all data</p>
+                      <p className="text-sm text-gray-600 mb-3">
+                        Permanently delete your account and all data
+                      </p>
                       <Button
                         variant="destructive"
                         onClick={() => {
-                          if (confirm("Are you sure you want to logout?")) {
+                          if (confirm('Are you sure you want to logout?')) {
                             logout()
                           }
                         }}

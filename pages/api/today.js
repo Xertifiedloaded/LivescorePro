@@ -1,9 +1,9 @@
-import { pool } from "../../lib/database"
-import { errorHandler } from "../../lib/middleware"
+import { pool } from '../../lib/database'
+import { errorHandler } from '../../lib/middleware'
 
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" })
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' })
   }
 
   try {
@@ -20,12 +20,12 @@ export default async function handler(req, res) {
       WHERE m.match_date >= $1 AND m.match_date < $2
       ORDER BY m.match_date ASC
     `,
-      [startOfDay, endOfDay],
+      [startOfDay, endOfDay]
     )
 
     res.status(200).json({
       matches: result.rows,
-      date: today.toISOString().split("T")[0],
+      date: today.toISOString().split('T')[0],
       count: result.rows.length,
       message: "Today's matches",
     })

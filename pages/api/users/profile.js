@@ -1,14 +1,14 @@
-import { body, validationResult } from "express-validator"
-import { pool } from "../../../lib/database"
-import { authenticateToken, errorHandler } from "../../../lib/middleware"
+import { body, validationResult } from 'express-validator'
+import { pool } from '../../../lib/database'
+import { authenticateToken, errorHandler } from '../../../lib/middleware'
 
 export default async function handler(req, res) {
-  if (req.method === "GET") {
+  if (req.method === 'GET') {
     return getUserProfile(req, res)
-  } else if (req.method === "PUT") {
+  } else if (req.method === 'PUT') {
     return updateUserProfile(req, res)
   } else {
-    return res.status(405).json({ error: "Method not allowed" })
+    return res.status(405).json({ error: 'Method not allowed' })
   }
 }
 
@@ -17,8 +17,8 @@ async function getUserProfile(req, res) {
     const user = await authenticateToken(req)
 
     const result = await pool.query(
-      "SELECT id, username, email, first_name, last_name, balance, created_at FROM users WHERE id = $1",
-      [user.id],
+      'SELECT id, username, email, first_name, last_name, balance, created_at FROM users WHERE id = $1',
+      [user.id]
     )
 
     res.status(200).json({ user: result.rows[0] })
@@ -33,9 +33,9 @@ async function updateUserProfile(req, res) {
 
     // Validate input
     const validateUpdate = [
-      body("firstName").optional().isLength({ max: 50 }).trim(),
-      body("lastName").optional().isLength({ max: 50 }).trim(),
-      body("email").optional().isEmail().normalizeEmail(),
+      body('firstName').optional().isLength({ max: 50 }).trim(),
+      body('lastName').optional().isLength({ max: 50 }).trim(),
+      body('email').optional().isEmail().normalizeEmail(),
     ]
 
     await Promise.all(validateUpdate.map((validation) => validation.run(req)))
@@ -50,10 +50,13 @@ async function updateUserProfile(req, res) {
 
     // Check if email is already in use
     if (email) {
-      const emailCheck = await pool.query("SELECT id FROM users WHERE email = $1 AND id != $2", [email, userId])
+      const emailCheck = await pool.query('SELECT id FROM users WHERE email = $1 AND id != $2', [
+        email,
+        userId,
+      ])
 
       if (emailCheck.rows.length > 0) {
-        return res.status(400).json({ error: "Email already in use" })
+        return res.status(400).json({ error: 'Email already in use' })
       }
     }
 
@@ -80,7 +83,7 @@ async function updateUserProfile(req, res) {
     }
 
     if (updateFields.length === 0) {
-      return res.status(400).json({ error: "No fields to update" })
+      return res.status(400).json({ error: 'No fields to update' })
     }
 
     updateFields.push(`updated_at = CURRENT_TIMESTAMP`)
@@ -88,7 +91,7 @@ async function updateUserProfile(req, res) {
 
     const query = `
       UPDATE users 
-      SET ${updateFields.join(", ")} 
+      SET ${updateFields.join(', ')} 
       WHERE id = $${paramCount} 
       RETURNING id, username, email, first_name, last_name, balance
     `
@@ -96,7 +99,7 @@ async function updateUserProfile(req, res) {
     const result = await pool.query(query, values)
 
     res.status(200).json({
-      message: "Profile updated successfully",
+      message: 'Profile updated successfully',
       user: result.rows[0],
     })
   } catch (error) {

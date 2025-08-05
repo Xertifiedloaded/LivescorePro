@@ -1,14 +1,14 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { useAuth } from "@/contexts/AuthContext"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { predictionsApi, usersApi } from "@/lib/api"
-import { Target, TrendingUp, DollarSign, Calendar, Plus } from "lucide-react"
-import Link from "next/link"
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute"
+import { useState, useEffect } from 'react'
+import { useAuth } from '@/contexts/AuthContext'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { predictionsApi, usersApi } from '@/lib/api'
+import { Target, TrendingUp, DollarSign, Calendar, Plus } from 'lucide-react'
+import Link from 'next/link'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 
 interface DashboardStats {
   totalPredictions: number
@@ -54,7 +54,9 @@ export default function DashboardPage() {
       try {
         const [statsResponse, predictionsResponse, balanceResponse] = await Promise.all([
           predictionsApi.getMyStats().catch(() => ({ data: {} })),
-          predictionsApi.getMyPredictions({ limit: 5 }).catch(() => ({ data: { predictions: [] } })),
+          predictionsApi
+            .getMyPredictions({ limit: 5 })
+            .catch(() => ({ data: { predictions: [] } })),
           usersApi.getBalance().catch(() => ({ data: { balance: 0 } })),
         ])
 
@@ -64,15 +66,15 @@ export default function DashboardPage() {
           wonPredictions: statsData.won_predictions || 0,
           lostPredictions: statsData.lost_predictions || 0,
           pendingPredictions: statsData.pending_predictions || 0,
-          totalStaked: Number.parseFloat(statsData.total_staked || "0"),
-          totalWinnings: Number.parseFloat(statsData.total_winnings || "0"),
+          totalStaked: Number.parseFloat(statsData.total_staked || '0'),
+          totalWinnings: Number.parseFloat(statsData.total_winnings || '0'),
           winRate: statsData.win_rate || 0,
           balance: balanceResponse.data.balance || 0,
         })
 
         setRecentPredictions(predictionsResponse.data.predictions || [])
       } catch (error) {
-        console.error("Error fetching dashboard data:", error)
+        console.error('Error fetching dashboard data:', error)
       } finally {
         setLoading(false)
       }
@@ -84,22 +86,22 @@ export default function DashboardPage() {
   }, [user])
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     })
   }
 
   const getPredictionTypeLabel = (type: string) => {
     switch (type) {
-      case "HOME":
-        return "Home Win"
-      case "AWAY":
-        return "Away Win"
-      case "DRAW":
-        return "Draw"
+      case 'HOME':
+        return 'Home Win'
+      case 'AWAY':
+        return 'Away Win'
+      case 'DRAW':
+        return 'Draw'
       default:
         return type
     }
@@ -107,14 +109,14 @@ export default function DashboardPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "WON":
-        return "default"
-      case "LOST":
-        return "destructive"
-      case "PENDING":
-        return "secondary"
+      case 'WON':
+        return 'default'
+      case 'LOST':
+        return 'destructive'
+      case 'PENDING':
+        return 'secondary'
       default:
-        return "secondary"
+        return 'secondary'
     }
   }
 
@@ -187,7 +189,7 @@ export default function DashboardPage() {
             <CardContent>
               <div
                 className={`text-2xl font-bold ${
-                  stats.totalWinnings - stats.totalStaked >= 0 ? "text-green-600" : "text-red-600"
+                  stats.totalWinnings - stats.totalStaked >= 0 ? 'text-green-600' : 'text-red-600'
                 }`}
               >
                 ${(stats.totalWinnings - stats.totalStaked).toFixed(2)}
@@ -215,18 +217,26 @@ export default function DashboardPage() {
               {recentPredictions.length > 0 ? (
                 <div className="space-y-4">
                   {recentPredictions.map((prediction) => (
-                    <div key={prediction.id} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div
+                      key={prediction.id}
+                      className="flex items-center justify-between p-3 border rounded-lg"
+                    >
                       <div className="flex-1">
                         <div className="font-medium">
                           {prediction.home_team} vs {prediction.away_team}
                         </div>
                         <div className="text-sm text-gray-600">
-                          {prediction.league_name} • {getPredictionTypeLabel(prediction.prediction_type)}
+                          {prediction.league_name} •{' '}
+                          {getPredictionTypeLabel(prediction.prediction_type)}
                         </div>
-                        <div className="text-xs text-gray-500">{formatDate(prediction.created_at)}</div>
+                        <div className="text-xs text-gray-500">
+                          {formatDate(prediction.created_at)}
+                        </div>
                       </div>
                       <div className="text-right">
-                        <Badge variant={getStatusColor(prediction.status)}>{prediction.status}</Badge>
+                        <Badge variant={getStatusColor(prediction.status)}>
+                          {prediction.status}
+                        </Badge>
                         <div className="text-sm text-gray-600 mt-1">${prediction.stake_amount}</div>
                       </div>
                     </div>
@@ -250,7 +260,7 @@ export default function DashboardPage() {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button  className="w-full">
+              <Button className="w-full">
                 <Link className="flex items-center" href="/matches">
                   <Target className="h-4 w-4 mr-2" />
                   Make Prediction

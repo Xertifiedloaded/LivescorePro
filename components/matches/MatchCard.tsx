@@ -1,10 +1,10 @@
-import Link from "next/link"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Calendar, Clock, Users, MapPin } from "lucide-react"
-import { format } from "date-fns"
-import { LiveIndicator } from "@/components/ui/live-indicator"
+import Link from 'next/link'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Calendar, Clock, Users, MapPin } from 'lucide-react'
+import { format } from 'date-fns'
+import { LiveIndicator } from '@/components/ui/live-indicator'
 
 interface Match {
   id: string | number
@@ -28,9 +28,9 @@ interface MatchCardProps {
 }
 
 export function MatchCard({ match, isLive = false }: MatchCardProps) {
-  const isFinished = match.status === "FINISHED"
-  const isScheduled = match.status === "SCHEDULED"
-console.log(match)
+  const isFinished = match.status === 'FINISHED'
+  const isScheduled = match.status === 'SCHEDULED'
+  console.log(match)
   const getStatusBadge = () => {
     if (isLive) {
       return (
@@ -77,7 +77,9 @@ console.log(match)
                 <span className="font-semibold text-gray-900 text-lg">{match.home_team}</span>
               </div>
               {match.home_score !== undefined && (
-                <span className="score-display text-3xl font-bold text-primary">{match.home_score}</span>
+                <span className="score-display text-3xl font-bold text-primary">
+                  {match.home_score}
+                </span>
               )}
             </div>
 
@@ -95,33 +97,41 @@ console.log(match)
                 <span className="font-semibold text-gray-900 text-lg">{match.away_team}</span>
               </div>
               {match.away_score !== undefined && (
-                <span className="score-display text-3xl font-bold text-primary">{match.away_score}</span>
+                <span className="score-display text-3xl font-bold text-primary">
+                  {match.away_score}
+                </span>
               )}
             </div>
           </div>
 
-
           {!isLive && !isFinished && (
             <div className="flex items-center justify-center gap-2 text-sm text-gray-600 bg-gray-50 rounded-lg py-3 px-4">
               <Calendar className="h-4 w-4" />
-              <span className="font-medium">{format(new Date(match.match_date), "MMM dd, HH:mm")}</span>
+              <span className="font-medium">
+                {format(new Date(match.match_date), 'MMM dd, HH:mm')}
+              </span>
             </div>
           )}
-
 
           {match.odds_home && !isFinished && (
             <div className="grid grid-cols-3 gap-3">
               <div className="text-center p-3 bg-green-50 rounded-lg border border-green-100">
                 <div className="font-bold text-green-700 text-lg">{match.odds_home}</div>
-                <div className="text-green-600 text-xs font-medium uppercase tracking-wider">Home</div>
+                <div className="text-green-600 text-xs font-medium uppercase tracking-wider">
+                  Home
+                </div>
               </div>
               <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
                 <div className="font-bold text-gray-700 text-lg">{match.odds_draw}</div>
-                <div className="text-gray-600 text-xs font-medium uppercase tracking-wider">Draw</div>
+                <div className="text-gray-600 text-xs font-medium uppercase tracking-wider">
+                  Draw
+                </div>
               </div>
               <div className="text-center p-3 bg-blue-50 rounded-lg border border-blue-100">
                 <div className="font-bold text-blue-700 text-lg">{match.odds_away}</div>
-                <div className="text-blue-600 text-xs font-medium uppercase tracking-wider">Away</div>
+                <div className="text-blue-600 text-xs font-medium uppercase tracking-wider">
+                  Away
+                </div>
               </div>
             </div>
           )}
@@ -133,11 +143,7 @@ console.log(match)
             </div>
           )}
 
-
-          <Button
-            className="w-full flex items-center bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold shadow-lg group-hover:shadow-xl transition-all"
-            
-          >
+          <Button className="w-full flex items-center bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold shadow-lg group-hover:shadow-xl transition-all">
             <Link href={`/matches/${match.id}`}>
               {isLive ? (
                 <div className="flex items-center">
@@ -145,7 +151,7 @@ console.log(match)
                   Watch Live
                 </div>
               ) : (
-          <div className="flex items-center">
+                <div className="flex items-center">
                   <Calendar className="mr-2 h-4 w-4" />
                   View Details
                 </div>

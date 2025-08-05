@@ -1,27 +1,26 @@
-"use client"
+'use client'
 
-import { useEffect, useState } from "react"
-import Head from "next/head"
-import "../styles/globals.css"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { useRouter } from "next/router"
+import { useEffect, useState } from 'react'
+import Head from 'next/head'
+import '../styles/globals.css'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { useRouter } from 'next/router'
 import { AuthProvider } from '../contexts/AuthContext'
 import { Navbar } from '../components/layout/Navbar'
 import { Footer } from '../components/layout/Footer'
 
-
 function ErrorBoundary({ children }) {
   useEffect(() => {
     const handleError = (error) => {
-      console.error("Global error:", error)
+      console.error('Global error:', error)
     }
 
-    window.addEventListener("error", handleError)
-    window.addEventListener("unhandledrejection", handleError)
+    window.addEventListener('error', handleError)
+    window.addEventListener('unhandledrejection', handleError)
 
     return () => {
-      window.removeEventListener("error", handleError)
-      window.removeEventListener("unhandledrejection", handleError)
+      window.removeEventListener('error', handleError)
+      window.removeEventListener('unhandledrejection', handleError)
     }
   }, [])
 
@@ -40,10 +39,10 @@ export default function App({ Component, pageProps }) {
             staleTime: 30000,
           },
         },
-      }),
+      })
   )
 
-  const isAuthPage = router.pathname.startsWith("/auth")
+  const isAuthPage = router.pathname.startsWith('/auth')
 
   return (
     <ErrorBoundary>

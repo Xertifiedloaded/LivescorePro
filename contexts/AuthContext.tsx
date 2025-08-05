@@ -1,10 +1,9 @@
-"use client"
+'use client'
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 
-import type { UserInfo } from "@/types/auth"
-import { authApi } from "@/lib/api"
-
+import type { UserInfo } from '@/types/auth'
+import { authApi } from '@/lib/api'
 
 interface AuthContextType {
   user: UserInfo | null
@@ -31,8 +30,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("token")
-    const savedUser = localStorage.getItem("user")
+    const savedToken = localStorage.getItem('token')
+    const savedUser = localStorage.getItem('user')
 
     if (savedToken && savedUser) {
       setToken(savedToken)
@@ -49,8 +48,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setUser(user)
       setToken(accessToken)
-      localStorage.setItem("token", accessToken)
-      localStorage.setItem("user", JSON.stringify(user))
+      localStorage.setItem('token', accessToken)
+      localStorage.setItem('user', JSON.stringify(user))
     } catch (error) {
       throw error
     }
@@ -63,8 +62,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { user, accessToken } = response.data
       setUser(user)
       setToken(accessToken)
-      localStorage.setItem("token", accessToken)
-      localStorage.setItem("user", JSON.stringify(user))
+      localStorage.setItem('token', accessToken)
+      localStorage.setItem('user', JSON.stringify(user))
     } catch (error) {
       throw error
     }
@@ -73,8 +72,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     setUser(null)
     setToken(null)
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
   }
 
   return (
@@ -97,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext)
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider")
+    throw new Error('useAuth must be used within an AuthProvider')
   }
   return context
 }

@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&family=Lilita+One&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playwrite+PL:wght@100..400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-@import "tailwindcss";
-@import "tw-animate-css";
-html{
+@import 'tailwindcss';
+@import 'tw-animate-css';
+html {
   overflow-x: hidden;
-  scroll-behavior: smooth
+  scroll-behavior: smooth;
 }
 
 :root {
@@ -133,17 +133,19 @@ html{
   }
   h1,
   h2 {
-    font-family: "Lilita One", sans-serif;
+    font-family: 'Lilita One', sans-serif;
   }
-  p{
-  font-family: "Poppins", sans-serif;
-  font-style: normal;
+  p {
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
   }
   body {
-    font-family: "Montserrat", sans-serif;
+    font-family: 'Montserrat', sans-serif;
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
   }
 }
 a {
@@ -207,11 +209,11 @@ a {
 
   .live-indicator::before {
     @apply absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75;
-    content: "";
+    content: '';
   }
 
   .live-indicator::after {
     @apply relative inline-flex h-3 w-3 rounded-full bg-red-500;
-    content: "";
+    content: '';
   }
 }

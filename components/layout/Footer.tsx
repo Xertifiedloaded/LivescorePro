@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { Activity, Github, Twitter, Mail } from "lucide-react";
+import Link from 'next/link'
+import { Activity, Github, Twitter, Mail } from 'lucide-react'
 
 export function Footer() {
   return (
@@ -12,33 +12,22 @@ export function Footer() {
                 <Activity className="h-6 w-6 text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="text-xl font-bold text-gray-900">
-                  LiveScore
-                </span>
+                <span className="text-xl font-bold text-gray-900">LiveScore</span>
                 <span className="text-xs text-gray-500 -mt-1">Pro</span>
               </div>
             </div>
             <p className="text-sm text-gray-600 max-w-xs">
-              Your premier destination for live football scores, betting
-              predictions, and match analysis.
+              Your premier destination for live football scores, betting predictions, and match
+              analysis.
             </p>
             <div className="flex space-x-4">
-              <a
-                href="#"
-                className="text-gray-400 hover:text-primary transition-colors"
-              >
+              <a href="#" className="text-gray-400 hover:text-primary transition-colors">
                 <Twitter className="h-5 w-5" />
               </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-primary transition-colors"
-              >
+              <a href="#" className="text-gray-400 hover:text-primary transition-colors">
                 <Github className="h-5 w-5" />
               </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-primary transition-colors"
-              >
+              <a href="#" className="text-gray-400 hover:text-primary transition-colors">
                 <Mail className="h-5 w-5" />
               </a>
             </div>
@@ -125,12 +114,14 @@ export function Footer() {
 
         <div className="border-t mt-12 pt-8 text-center">
           <small className="text-sm text-gray-600">
-            © 2023 - {new Date().getFullYear()} LiveScore Pro. All rights
-            reserved.
+            © 2023 - {new Date().getFullYear()} LiveScore Pro. All rights reserved.
           </small>
-          <small className="block text-[12px]"> Built with ❤️ for football fans by codeWithXertified</small>
+          <small className="block text-[12px]">
+            {' '}
+            Built with ❤️ for football fans by codeWithXertified
+          </small>
         </div>
       </div>
     </footer>
-  );
+  )
 }

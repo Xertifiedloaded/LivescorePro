@@ -1,14 +1,14 @@
-import { pool } from "../../../../lib/database"
-import { errorHandler } from "../../../../lib/middleware"
+import { pool } from '../../../../lib/database'
+import { errorHandler } from '../../../../lib/middleware'
 
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" })
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' })
   }
 
   try {
     const { code } = req.query
-    const { limit = 20, offset = 0, status = "SCHEDULED" } = req.query
+    const { limit = 20, offset = 0, status = 'SCHEDULED' } = req.query
 
     const result = await pool.query(
       `
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
       ORDER BY m.match_date ASC 
       LIMIT $3 OFFSET $4
     `,
-      [code.toUpperCase(), status, Number.parseInt(limit), Number.parseInt(offset)],
+      [code.toUpperCase(), status, Number.parseInt(limit), Number.parseInt(offset)]
     )
 
     res.status(200).json({

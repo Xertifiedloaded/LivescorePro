@@ -1,14 +1,14 @@
-const { pool } = require("../config/database")
-const bcrypt = require("bcryptjs")
+const { pool } = require('../config/database')
+const bcrypt = require('bcryptjs')
 
 async function seedData() {
   const client = await pool.connect()
 
   try {
-    console.log("Starting data seeding...")
+    console.log('Starting data seeding...')
 
     // Create sample users
-    const hashedPassword = await bcrypt.hash("password123", 12)
+    const hashedPassword = await bcrypt.hash('password123', 12)
 
     await client.query(
       `
@@ -18,7 +18,7 @@ async function seedData() {
       ('mike_wilson', 'mike@example.com', $1, 'Mike', 'Wilson', 200.00)
       ON CONFLICT (username) DO NOTHING
     `,
-      [hashedPassword],
+      [hashedPassword]
     )
 
     // Insert sample leagues (if not already exists)
@@ -33,7 +33,7 @@ async function seedData() {
     `)
 
     // Insert sample matches
-    const leagueResult = await client.query("SELECT id FROM leagues WHERE external_id = 2021")
+    const leagueResult = await client.query('SELECT id FROM leagues WHERE external_id = 2021')
     const leagueId = leagueResult.rows[0]?.id
 
     if (leagueId) {
@@ -49,13 +49,13 @@ async function seedData() {
         (1004, $1, 'Newcastle', 'Brighton', NOW() + INTERVAL '5 days', 'SCHEDULED', 2.30, 3.10, 3.20)
         ON CONFLICT (external_id) DO NOTHING
       `,
-        [leagueId],
+        [leagueId]
       )
     }
 
-    console.log("Data seeding completed successfully!")
+    console.log('Data seeding completed successfully!')
   } catch (error) {
-    console.error("Error seeding data:", error)
+    console.error('Error seeding data:', error)
   } finally {
     client.release()
   }

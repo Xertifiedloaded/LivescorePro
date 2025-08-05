@@ -1,9 +1,9 @@
-import { pool } from "../../../lib/database"
-import { authenticateToken, errorHandler } from "../../../lib/middleware"
+import { pool } from '../../../lib/database'
+import { authenticateToken, errorHandler } from '../../../lib/middleware'
 
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" })
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' })
   }
 
   try {
@@ -22,20 +22,24 @@ export default async function handler(req, res) {
       FROM predictions 
       WHERE user_id = $1
     `,
-      [userId],
+      [userId]
     )
 
     const stats = statsResult.rows[0]
     const winRate =
       stats.total_predictions > 0
-        ? ((stats.won_predictions / (stats.won_predictions + stats.lost_predictions)) * 100).toFixed(2)
+        ? (
+            (stats.won_predictions / (stats.won_predictions + stats.lost_predictions)) *
+            100
+          ).toFixed(2)
         : 0
 
     res.status(200).json({
       stats: {
         ...stats,
         win_rate: Number.parseFloat(winRate),
-        profit_loss: Number.parseFloat(stats.total_winnings) - Number.parseFloat(stats.total_staked),
+        profit_loss:
+          Number.parseFloat(stats.total_winnings) - Number.parseFloat(stats.total_staked),
       },
     })
   } catch (error) {

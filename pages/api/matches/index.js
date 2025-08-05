@@ -1,13 +1,22 @@
-import { pool } from "../../../lib/database"
-import { errorHandler } from "../../../lib/middleware"
+import { pool } from '../../../lib/database'
+import { errorHandler } from '../../../lib/middleware'
 
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" })
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' })
   }
 
   try {
-    const { league, status = "SCHEDULED", limit = 50, offset = 0, dateFrom, dateTo, stage, matchday } = req.query
+    const {
+      league,
+      status = 'SCHEDULED',
+      limit = 50,
+      offset = 0,
+      dateFrom,
+      dateTo,
+      stage,
+      matchday,
+    } = req.query
 
     let query = `
       SELECT m.*, l.name as league_name, l.country, l.code as league_code,
@@ -55,7 +64,7 @@ export default async function handler(req, res) {
       params.push(Number.parseInt(matchday))
     }
 
-    if (!dateFrom && !dateTo && status === "SCHEDULED") {
+    if (!dateFrom && !dateTo && status === 'SCHEDULED') {
       paramCount++
       query += ` AND m.match_date > $${paramCount}`
       params.push(new Date())

@@ -1,46 +1,50 @@
-import { body, validationResult } from "express-validator"
-import { pool } from "../../../lib/database"
-import { authenticateToken, errorHandler } from "../../../lib/middleware"
+import { body, validationResult } from 'express-validator'
+import { pool } from '../../../lib/database'
+import { authenticateToken, errorHandler } from '../../../lib/middleware'
 
 const validatePrediction = [
-  body("matchId").isInt({ min: 1 }).withMessage("Match ID must be a positive integer"),
-  body("predictionType").isIn(["HOME", "DRAW", "AWAY"]).withMessage("Prediction type must be HOME, DRAW, or AWAY"),
-  body("stakeAmount").isFloat({ min: 0.01, max: 10000 }).withMessage("Stake amount must be between 0.01 and 10000"),
+  body('matchId').isInt({ min: 1 }).withMessage('Match ID must be a positive integer'),
+  body('predictionType')
+    .isIn(['HOME', 'DRAW', 'AWAY'])
+    .withMessage('Prediction type must be HOME, DRAW, or AWAY'),
+  body('stakeAmount')
+    .isFloat({ min: 0.01, max: 10000 })
+    .withMessage('Stake amount must be between 0.01 and 10000'),
 ]
 
 export default async function handler(req, res) {
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     return createPrediction(req, res)
-  } else if (req.method === "GET") {
+  } else if (req.method === 'GET') {
     return getUserPredictions(req, res)
   } else {
-    return res.status(405).json({ error: "Method not allowed" })
+    return res.status(405).json({ error: 'Method not allowed' })
   }
 }
 
 async function createPrediction(req, res) {
   const client = await pool.connect()
   try {
-    await client.query("BEGIN")
+    await client.query('BEGIN')
 
     const user = await authenticateToken(req)
     if (!user) {
-      await client.query("ROLLBACK")
-      console.log("❌ Authentication failed")
-      return res.status(401).json({ error: "Authentication required" })
+      await client.query('ROLLBACK')
+      console.log('❌ Authentication failed')
+      return res.status(401).json({ error: 'Authentication required' })
     }
 
     await Promise.all(validatePrediction.map((validation) => validation.run(req)))
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      await client.query("ROLLBACK")
-      console.log("❌ Validation errors:", errors.array())
+      await client.query('ROLLBACK')
+      console.log('❌ Validation errors:', errors.array())
       return res.status(400).json({
-        error: "Validation failed",
+        error: 'Validation failed',
         details: errors
           .array()
           .map((err) => `${err.param}: ${err.msg}`)
-          .join(", "),
+          .join(', '),
         errors: errors.array(),
       })
     }
@@ -50,88 +54,88 @@ async function createPrediction(req, res) {
     const matchIdInt = Number.parseInt(matchId, 10)
     const stakeAmountFloat = Number.parseFloat(stakeAmount)
 
-    console.log("✅ Processed values:", { matchIdInt, predictionType, stakeAmountFloat, userId })
+    console.log('✅ Processed values:', { matchIdInt, predictionType, stakeAmountFloat, userId })
     const matchResult = await client.query(
       `SELECT id, match_date, status, odds_home, odds_draw, odds_away 
        FROM matches 
        WHERE id = $1 AND status = 'SCHEDULED' AND match_date > NOW()`,
-      [matchIdInt],
+      [matchIdInt]
     )
 
     if (matchResult.rows.length === 0) {
-      await client.query("ROLLBACK")
-      console.log("❌ Match not found or not available for betting:", matchIdInt)
-      return res.status(400).json({ error: "Match not available for betting" })
+      await client.query('ROLLBACK')
+      console.log('❌ Match not found or not available for betting:', matchIdInt)
+      return res.status(400).json({ error: 'Match not available for betting' })
     }
 
     const match = matchResult.rows[0]
 
     // Check for existing prediction - this is the key fix
-    const existingPrediction = await client.query("SELECT id FROM predictions WHERE user_id = $1 AND match_id = $2", [
-      userId,
-      matchIdInt,
-    ])
+    const existingPrediction = await client.query(
+      'SELECT id FROM predictions WHERE user_id = $1 AND match_id = $2',
+      [userId, matchIdInt]
+    )
 
-    console.log("🔍 Existing prediction query result:", existingPrediction.rows)
+    console.log('🔍 Existing prediction query result:', existingPrediction.rows)
 
     if (existingPrediction.rows.length > 0) {
-      await client.query("ROLLBACK")
-      console.log("❌ User already has a prediction for this match")
+      await client.query('ROLLBACK')
+      console.log('❌ User already has a prediction for this match')
       return res.status(400).json({
-        error: "You already have a prediction for this match",
-        code: "DUPLICATE_PREDICTION",
+        error: 'You already have a prediction for this match',
+        code: 'DUPLICATE_PREDICTION',
         existingPredictionId: existingPrediction.rows[0].id,
       })
     }
 
-    console.log("✅ No existing prediction found")
+    console.log('✅ No existing prediction found')
 
     // Check user balance
-    const userResult = await client.query("SELECT balance FROM users WHERE id = $1", [userId])
-    console.log("🔍 User balance query result:", userResult.rows)
+    const userResult = await client.query('SELECT balance FROM users WHERE id = $1', [userId])
+    console.log('🔍 User balance query result:', userResult.rows)
 
     if (userResult.rows.length === 0) {
-      await client.query("ROLLBACK")
-      console.log("❌ User not found in database")
-      return res.status(400).json({ error: "User not found" })
+      await client.query('ROLLBACK')
+      console.log('❌ User not found in database')
+      return res.status(400).json({ error: 'User not found' })
     }
 
     const userBalance = Number.parseFloat(userResult.rows[0].balance)
-    console.log("✅ User balance:", userBalance, "Stake amount:", stakeAmountFloat)
+    console.log('✅ User balance:', userBalance, 'Stake amount:', stakeAmountFloat)
 
     if (userBalance < stakeAmountFloat) {
-      await client.query("ROLLBACK")
-      console.log("❌ Insufficient balance")
-      return res.status(400).json({ error: "Insufficient balance" })
+      await client.query('ROLLBACK')
+      console.log('❌ Insufficient balance')
+      return res.status(400).json({ error: 'Insufficient balance' })
     }
 
-    console.log("✅ Balance check passed")
+    console.log('✅ Balance check passed')
 
     // Get odds
-    console.log("🔍 Getting odds for prediction type:", predictionType)
+    console.log('🔍 Getting odds for prediction type:', predictionType)
     let odds
     switch (predictionType) {
-      case "HOME":
+      case 'HOME':
         odds = match.odds_home
         break
-      case "DRAW":
+      case 'DRAW':
         odds = match.odds_draw
         break
-      case "AWAY":
+      case 'AWAY':
         odds = match.odds_away
         break
       default:
-        await client.query("ROLLBACK")
-        console.log("❌ Invalid prediction type:", predictionType)
-        return res.status(400).json({ error: "Invalid prediction type" })
+        await client.query('ROLLBACK')
+        console.log('❌ Invalid prediction type:', predictionType)
+        return res.status(400).json({ error: 'Invalid prediction type' })
     }
 
-    console.log("✅ Odds found:", odds)
+    console.log('✅ Odds found:', odds)
 
     if (!odds || Number.parseFloat(odds) <= 0) {
-      await client.query("ROLLBACK")
-      console.log("❌ Odds not available or invalid:", odds)
-      return res.status(400).json({ error: "Odds not available for this prediction type" })
+      await client.query('ROLLBACK')
+      console.log('❌ Odds not available or invalid:', odds)
+      return res.status(400).json({ error: 'Odds not available for this prediction type' })
     }
 
     const potentialWinnings = stakeAmountFloat * Number.parseFloat(odds)
@@ -141,46 +145,46 @@ async function createPrediction(req, res) {
       `INSERT INTO predictions (user_id, match_id, prediction_type, stake_amount, potential_winnings, status)
        VALUES ($1, $2, $3, $4, $5, 'PENDING')
        RETURNING *`,
-      [userId, matchIdInt, predictionType, stakeAmountFloat, potentialWinnings],
+      [userId, matchIdInt, predictionType, stakeAmountFloat, potentialWinnings]
     )
 
-    console.log("✅ Prediction created:", predictionResult.rows[0])
+    console.log('✅ Prediction created:', predictionResult.rows[0])
 
     // Update user balance
-    console.log("🔍 Updating user balance...")
+    console.log('🔍 Updating user balance...')
     const balanceUpdateResult = await client.query(
-      "UPDATE users SET balance = balance - $1 WHERE id = $2 RETURNING balance",
-      [stakeAmountFloat, userId],
+      'UPDATE users SET balance = balance - $1 WHERE id = $2 RETURNING balance',
+      [stakeAmountFloat, userId]
     )
 
-    console.log("✅ Balance updated:", balanceUpdateResult.rows[0])
+    console.log('✅ Balance updated:', balanceUpdateResult.rows[0])
 
-    await client.query("COMMIT")
-    console.log("✅ Transaction committed successfully")
+    await client.query('COMMIT')
+    console.log('✅ Transaction committed successfully')
 
     res.status(201).json({
-      message: "Prediction created successfully",
+      message: 'Prediction created successfully',
       prediction: predictionResult.rows[0],
     })
   } catch (error) {
-    await client.query("ROLLBACK")
+    await client.query('ROLLBACK')
 
     // Enhanced error handling
-    if (error.code === "23505") {
-      console.log("❌ Database error: Unique constraint violation")
+    if (error.code === '23505') {
+      console.log('❌ Database error: Unique constraint violation')
       return res.status(400).json({
-        error: "You already have a prediction for this match",
-        code: "DUPLICATE_PREDICTION",
+        error: 'You already have a prediction for this match',
+        code: 'DUPLICATE_PREDICTION',
       })
-    } else if (error.code === "23503") {
-      console.log("❌ Database error: Foreign key constraint violation")
-      return res.status(400).json({ error: "Invalid match or user reference" })
-    } else if (error.code === "23514") {
-      console.log("❌ Database error: Check constraint violation")
-      return res.status(400).json({ error: "Data violates database constraints" })
+    } else if (error.code === '23503') {
+      console.log('❌ Database error: Foreign key constraint violation')
+      return res.status(400).json({ error: 'Invalid match or user reference' })
+    } else if (error.code === '23514') {
+      console.log('❌ Database error: Check constraint violation')
+      return res.status(400).json({ error: 'Data violates database constraints' })
     }
 
-    console.error("❌ Unexpected error:", error)
+    console.error('❌ Unexpected error:', error)
     errorHandler(error, req, res)
   } finally {
     client.release()
@@ -191,7 +195,7 @@ async function getUserPredictions(req, res) {
   try {
     const user = await authenticateToken(req)
     if (!user) {
-      return res.status(401).json({ error: "Authentication required" })
+      return res.status(401).json({ error: 'Authentication required' })
     }
 
     const { status, limit = 20, offset = 0 } = req.query
@@ -225,7 +229,7 @@ async function getUserPredictions(req, res) {
       },
     })
   } catch (error) {
-    console.error("Error getting user predictions:", error)
+    console.error('Error getting user predictions:', error)
     errorHandler(error, req, res)
   }
 }

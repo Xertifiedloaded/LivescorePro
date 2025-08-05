@@ -28,6 +28,7 @@ This directory contains `.rest` files for testing the Football Betting API using
 ## Variables
 
 The files use variables like:
+
 - `@baseUrl` - API base URL
 - `@authToken` - JWT token from login responses
 - `@contentType` - Content-Type header
@@ -47,12 +48,21 @@ The files use variables like:
 4. View matches: `GET /matches`
 5. Place bet: `POST /predictions`
 6. Check results: `GET /predictions/my`
+
 # LivescorePro
+
 # LivescorePro
+
 # LivescorePro
+
 # LivescorePro
+
 # LivescorePro
+
 # LivescorePro
+
 # LivescorePro
+
 # LivescorePro
+
 # LivescorePro

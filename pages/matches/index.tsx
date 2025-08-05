@@ -1,27 +1,27 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { matchesApi } from "@/lib/api";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Search, Filter, Loader2 } from "lucide-react";
-import { MatchCard } from "@/components/matches/MatchCard";
-import type { Match, League } from "@/types/matches";
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { matchesApi } from '@/lib/api'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Calendar, Search, Filter, Loader2 } from 'lucide-react'
+import { MatchCard } from '@/components/matches/MatchCard'
+import type { Match, League } from '@/types/matches'
 
 export default function MatchesPage() {
-  const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter()
+  const [searchTerm, setSearchTerm] = useState('')
 
-  const league = (router.query.league as string) || "";
-  const status = (router.query.status as string) || "SCHEDULED";
-  const limit = 20;
-  const offset = Number.parseInt((router.query.offset as string) || "0");
+  const league = (router.query.league as string) || ''
+  const status = (router.query.status as string) || 'SCHEDULED'
+  const limit = 20
+  const offset = Number.parseInt((router.query.offset as string) || '0')
 
   const { data: matchesData, isLoading } = useQuery({
-    queryKey: ["matches", league, status, offset],
+    queryKey: ['matches', league, status, offset],
     queryFn: () =>
       matchesApi.getMatches({
         league,
@@ -29,37 +29,37 @@ export default function MatchesPage() {
         limit,
         offset,
       }),
-  });
+  })
 
   const { data: leaguesData } = useQuery({
-    queryKey: ["leagues"],
+    queryKey: ['leagues'],
     queryFn: () => matchesApi.getLeagues(),
-  });
+  })
 
   const handleFilterChange = (key: string, value: string) => {
-    const query = { ...router.query };
+    const query = { ...router.query }
     if (value) {
-      query[key] = value;
+      query[key] = value
     } else {
-      delete query[key];
+      delete query[key]
     }
-    delete query.offset;
-    router.push({ pathname: router.pathname, query });
-  };
+    delete query.offset
+    router.push({ pathname: router.pathname, query })
+  }
 
   const handlePageChange = (newOffset: number) => {
-    const query = { ...router.query, offset: newOffset.toString() };
-    router.push({ pathname: router.pathname, query });
-  };
+    const query = { ...router.query, offset: newOffset.toString() }
+    router.push({ pathname: router.pathname, query })
+  }
 
   const filteredMatches: Match[] =
     matchesData?.data?.matches?.filter(
       (match: Match) =>
-        searchTerm === "" ||
+        searchTerm === '' ||
         match.home_team.toLowerCase().includes(searchTerm.toLowerCase()) ||
         match.away_team.toLowerCase().includes(searchTerm.toLowerCase()) ||
         match.league_name?.toLowerCase().includes(searchTerm.toLowerCase())
-    ) || [];
+    ) || []
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
@@ -109,7 +109,7 @@ export default function MatchesPage() {
 
               <select
                 value={status}
-                onChange={(e) => handleFilterChange("status", e.target.value)}
+                onChange={(e) => handleFilterChange('status', e.target.value)}
                 className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 <option value="SCHEDULED">Scheduled</option>
@@ -120,7 +120,7 @@ export default function MatchesPage() {
 
               <select
                 value={league}
-                onChange={(e) => handleFilterChange("league", e.target.value)}
+                onChange={(e) => handleFilterChange('league', e.target.value)}
                 className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 <option value="">All Leagues</option>
@@ -133,8 +133,8 @@ export default function MatchesPage() {
               <Button
                 variant="outline"
                 onClick={() => {
-                  router.push({ pathname: router.pathname });
-                  setSearchTerm("");
+                  router.push({ pathname: router.pathname })
+                  setSearchTerm('')
                 }}
                 className="flex items-center gap-2"
               >
@@ -167,16 +167,12 @@ export default function MatchesPage() {
               <Card className="text-center py-20 border-0 shadow-lg">
                 <CardContent>
                   <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-6" />
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                    No matches found
-                  </h3>
-                  <p className="text-gray-600 mb-6">
-                    Try adjusting your search or filter criteria
-                  </p>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-3">No matches found</h3>
+                  <p className="text-gray-600 mb-6">Try adjusting your search or filter criteria</p>
                   <Button
                     onClick={() => {
-                      router.push({ pathname: router.pathname });
-                      setSearchTerm("");
+                      router.push({ pathname: router.pathname })
+                      setSearchTerm('')
                     }}
                   >
                     Clear All Filters
@@ -194,10 +190,7 @@ export default function MatchesPage() {
                 >
                   Previous
                 </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => handlePageChange(offset + limit)}
-                >
+                <Button variant="outline" onClick={() => handlePageChange(offset + limit)}>
                   Next
                 </Button>
               </div>
@@ -206,5 +199,5 @@ export default function MatchesPage() {
         )}
       </div>
     </div>
-  );
+  )
 }

@@ -1,13 +1,13 @@
-import { pool } from "../../../lib/database.js"
-import { errorHandler } from "../../../lib/middleware.js"
+import { pool } from '../../../lib/database.js'
+import { errorHandler } from '../../../lib/middleware.js'
 
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" })
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' })
   }
 
   try {
-    const popularLeagueCodes = ["PL", "PD", "BL1", "SA", "FL1", "CL"]
+    const popularLeagueCodes = ['PL', 'PD', 'BL1', 'SA', 'FL1', 'CL']
 
     const groupedMatches = {}
     let totalMatches = 0

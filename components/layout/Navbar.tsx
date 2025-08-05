@@ -1,43 +1,35 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { useRouter } from "next/router";
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  User,
-  LogOut,
-  Settings,
-  Trophy,
-  Activity,
-  Menu,
-  X,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
+} from '@/components/ui/dropdown-menu'
+import { User, LogOut, Settings, Trophy, Activity, Menu, X } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useAuth } from '@/contexts/AuthContext'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { useState } from 'react'
+import { Badge } from '@/components/ui/badge'
 
 export function Navbar() {
-  const { user, logout } = useAuth();
-  const router = useRouter();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, logout } = useAuth()
+  const router = useRouter()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const handleLogout = () => {
-    logout();
-    router.push("/");
-  };
+    logout()
+    router.push('/')
+  }
 
   const navItems = [
-    { href: "/matches", label: "Matches", icon: Trophy },
-    { href: "/live", label: "Live", icon: Activity },
-    { href: "/leagues", label: "Leagues", icon: Trophy },
-  ];
+    { href: '/matches', label: 'Matches', icon: Trophy },
+    { href: '/live', label: 'Live', icon: Activity },
+    { href: '/leagues', label: 'Leagues', icon: Trophy },
+  ]
 
   return (
     <nav className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-sm">
@@ -49,38 +41,33 @@ export function Navbar() {
                 <Activity className="h-6 w-6 text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="text-xl font-bold text-gray-900">
-                  LiveScore
-                </span>
+                <span className="text-xl font-bold text-gray-900">LiveScore</span>
                 <span className="text-xs text-gray-500 -mt-1">Pro</span>
               </div>
             </Link>
 
             <div className="hidden md:flex items-center space-x-1">
               {navItems.map((item) => {
-                const isActive = router.pathname === item.href;
+                const isActive = router.pathname === item.href
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       isActive
-                        ? "bg-primary/10 text-primary"
-                        : "text-gray-600 hover:text-primary hover:bg-gray-50"
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-gray-600 hover:text-primary hover:bg-gray-50'
                     }`}
                   >
                     <item.icon className="h-4 w-4" />
                     {item.label}
-                    {item.href === "/live" && (
-                      <Badge
-                        variant="destructive"
-                        className="text-xs px-1.5 py-0.5 ml-1"
-                      >
+                    {item.href === '/live' && (
+                      <Badge variant="destructive" className="text-xs px-1.5 py-0.5 ml-1">
                         LIVE
                       </Badge>
                     )}
                   </Link>
-                );
+                )
               })}
             </div>
           </div>
@@ -112,46 +99,24 @@ export function Navbar() {
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col space-y-1 leading-none">
-                      <p className="font-semibold text-gray-900">
-                        {user.username}
-                      </p>
-                      <p className="truncate text-sm text-gray-600">
-                        {user.email}
-                      </p>
+                      <p className="font-semibold text-gray-900">{user.username}</p>
+                      <p className="truncate text-sm text-gray-600">{user.email}</p>
                     </div>
                   </div>
-                  <DropdownMenuItem
-                    asChild
-                    className="cursor-pointer rounded-lg"
-                  >
-                    <Link
-                      href="/dashboard"
-                      className="flex items-center gap-3 p-3"
-                    >
+                  <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
+                    <Link href="/dashboard" className="flex items-center gap-3 p-3">
                       <User className="h-4 w-4" />
                       Dashboard
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    asChild
-                    className="cursor-pointer rounded-lg"
-                  >
-                    <Link
-                      href="/dashboard/predictions"
-                      className="flex items-center gap-3 p-3"
-                    >
+                  <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
+                    <Link href="/dashboard/predictions" className="flex items-center gap-3 p-3">
                       <Trophy className="h-4 w-4" />
                       My Predictions
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    asChild
-                    className="cursor-pointer rounded-lg"
-                  >
-                    <Link
-                      href="/dashboard/profile"
-                      className="flex items-center gap-3 p-3"
-                    >
+                  <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
+                    <Link href="/dashboard/profile" className="flex items-center gap-3 p-3">
                       <Settings className="h-4 w-4" />
                       Profile Settings
                     </Link>
@@ -187,11 +152,7 @@ export function Navbar() {
               className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
         </div>
@@ -201,30 +162,27 @@ export function Navbar() {
           <div className="md:hidden border-t bg-white py-4">
             <div className="space-y-2">
               {navItems.map((item) => {
-                const isActive = router.pathname === item.href;
+                const isActive = router.pathname === item.href
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                       isActive
-                        ? "bg-primary/10 text-primary"
-                        : "text-gray-600 hover:text-primary hover:bg-gray-50"
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-gray-600 hover:text-primary hover:bg-gray-50'
                     }`}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <item.icon className="h-4 w-4" />
                     {item.label}
-                    {item.href === "/live" && (
-                      <Badge
-                        variant="destructive"
-                        className="text-xs px-1.5 py-0.5 ml-auto"
-                      >
+                    {item.href === '/live' && (
+                      <Badge variant="destructive" className="text-xs px-1.5 py-0.5 ml-auto">
                         LIVE
                       </Badge>
                     )}
                   </Link>
-                );
+                )
               })}
               {!user && (
                 <div className="border-t pt-4 mt-4 space-y-2">
@@ -249,5 +207,5 @@ export function Navbar() {
         )}
       </div>
     </nav>
-  );
+  )
 }
