@@ -1,8 +1,8 @@
-import Link from "next/link"
-import { Badge } from "@/components/ui/badge"
-import { Calendar, Clock, Users, MapPin } from "lucide-react"
-import { format } from "date-fns"
-import { LiveIndicator } from "@/components/ui/live-indicator"
+import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
+import { Calendar, Clock, Users, MapPin } from 'lucide-react'
+import { format } from 'date-fns'
+import { LiveIndicator } from '@/components/ui/live-indicator'
 
 interface Match {
   id: string | number
@@ -26,8 +26,8 @@ interface MatchListItemProps {
 }
 
 export function MatchCard({ match, isLive = false }: MatchListItemProps) {
-  const isFinished = match.status === "FINISHED"
-  const isScheduled = match.status === "SCHEDULED"
+  const isFinished = match.status === 'FINISHED'
+  const isScheduled = match.status === 'SCHEDULED'
 
   const getStatusDisplay = () => {
     if (isLive) {
@@ -42,7 +42,11 @@ export function MatchCard({ match, isLive = false }: MatchListItemProps) {
       return <span className="text-gray-500 text-sm font-medium">FT</span>
     }
     if (isScheduled) {
-      return <span className="text-gray-700 font-medium text-sm">{format(new Date(match.match_date), "HH:mm")}</span>
+      return (
+        <span className="text-gray-700 font-medium text-sm">
+          {format(new Date(match.match_date), 'HH:mm')}
+        </span>
+      )
     }
     return <span className="text-gray-500 text-sm">{match.status}</span>
   }
@@ -52,7 +56,9 @@ export function MatchCard({ match, isLive = false }: MatchListItemProps) {
       <div className="group hover:bg-gray-50 border-b border-gray-100 transition-colors">
         <div className="px-4 py-2 bg-gray-50 border-b border-gray-100">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">{match.league_name}</span>
+            <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+              {match.league_name}
+            </span>
             {match.venue && (
               <div className="flex items-center gap-1 text-xs text-gray-500">
                 <MapPin className="h-3 w-3" />
@@ -101,7 +107,7 @@ export function MatchCard({ match, isLive = false }: MatchListItemProps) {
               {!isFinished && match.match_date && (
                 <div className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
-                  <span>{format(new Date(match.match_date), "MMM dd")}</span>
+                  <span>{format(new Date(match.match_date), 'MMM dd')}</span>
                 </div>
               )}
               {match.prediction_count && (
@@ -114,13 +120,18 @@ export function MatchCard({ match, isLive = false }: MatchListItemProps) {
 
             {match.odds_home && !isFinished && !isLive && (
               <div className="flex items-center gap-2 text-xs">
-                <span className="px-2 py-1 bg-green-100 text-green-700 rounded font-medium">{match.odds_home}</span>
-                <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded font-medium">{match.odds_draw}</span>
-                <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded font-medium">{match.odds_away}</span>
+                <span className="px-2 py-1 bg-green-100 text-green-700 rounded font-medium">
+                  {match.odds_home}
+                </span>
+                <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded font-medium">
+                  {match.odds_draw}
+                </span>
+                <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded font-medium">
+                  {match.odds_away}
+                </span>
               </div>
             )}
 
-      
             <div className="flex items-center gap-2">
               {isLive && (
                 <Badge variant="destructive" className="text-xs">
@@ -138,4 +149,3 @@ export function MatchCard({ match, isLive = false }: MatchListItemProps) {
     </Link>
   )
 }
-
