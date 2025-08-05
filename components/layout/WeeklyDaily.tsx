@@ -1,11 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Calendar, Clock, MapPin, Trophy } from 'lucide-react'
+import { Calendar, Clock, MapPin, Trophy, DollarSign, Eye, ArrowRight } from 'lucide-react'
 import { format, isToday, isTomorrow, parseISO, isValid } from 'date-fns'
 import { matchesApi } from '@/lib/api'
 import Link from 'next/link'
 import { Button } from '../ui/button'
+
 interface Match {
   id: number
   home_team: string
@@ -19,6 +20,9 @@ interface Match {
   league_code: string
   league_emblem: string
   league_type: string
+  odds_home?: string
+  odds_draw?: string
+  odds_away?: string
 }
 
 export default function MatchesDailyWeekly() {
@@ -33,6 +37,7 @@ export default function MatchesDailyWeekly() {
   const fetchMatches = async () => {
     try {
       const response = await matchesApi.getWeekMatches()
+      console.log(response)
       setMatches(response.data.matches)
     } catch (error) {
       console.error('Error fetching matches:', error)
@@ -44,6 +49,7 @@ export default function MatchesDailyWeekly() {
   const groupMatchesByDate = (matches: Match[]) => {
     const grouped: { [key: string]: Match[] } = {}
     matches.forEach((match) => {
+      // Extract date from the full datetime string
       const dateKey = match.match_date.split('T')[0]
       if (!grouped[dateKey]) grouped[dateKey] = []
       grouped[dateKey].push(match)
@@ -58,14 +64,23 @@ export default function MatchesDailyWeekly() {
     return format(date, 'EEEE, MMM d')
   }
 
-  const formatMatchDateTime = (dateStr: string, timeStr: string) => {
+  const formatMatchDateTime = (dateStr: string) => {
     try {
-      const combined = `${dateStr}T${timeStr}`
-      const parsed = parseISO(combined)
+      // Since match_date contains the full datetime, parse it directly
+      const parsed = parseISO(dateStr)
       return isValid(parsed) ? format(parsed, 'MMM dd, HH:mm') : 'TBD'
     } catch {
       return 'TBD'
     }
+  }
+
+  const formatOdds = (
+    home: string | undefined,
+    draw: string | undefined,
+    away: string | undefined
+  ) => {
+    if (!home || !draw || !away) return null
+    return { home, draw, away }
   }
 
   const groupedMatches = groupMatchesByDate(matches)
@@ -92,14 +107,13 @@ export default function MatchesDailyWeekly() {
         </div>
       </header>
 
-      <div className="container mx-auto  py-6">
+      <div className="container mx-auto py-6">
         <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 bg-gray-900 border border-gray-700 rounded-lg p-4">
           {dates.map((date) => {
             const dateObj = parseISO(date)
             const dayName = format(dateObj, 'EEE')
             const dayNumber = format(dateObj, 'd')
             const isSelected = selectedDate === date
-
             return (
               <button
                 key={date}
@@ -116,7 +130,7 @@ export default function MatchesDailyWeekly() {
         </div>
       </div>
 
-      <main className="container mx-auto  space-y-6 flex-grow">
+      <main className="container mx-auto space-y-6 flex-grow">
         {dates
           .filter((date) => !selectedDate || selectedDate === date)
           .map((date) => (
@@ -130,56 +144,65 @@ export default function MatchesDailyWeekly() {
                   {formatDateHeader(date)}
                 </h2>
               </div>
-
               <div className="divide-y divide-gray-700">
-                {groupedMatches[date].map((match) => (
-                  <div
-                    key={match.id}
-                    className="p-4 hover:bg-gray-800 transition grid grid-cols-1 sm:grid-cols-12 gap-4"
-                  >
-                    <div className="sm:col-span-2 text-xs sm:text-sm font-medium text-white flex items-center sm:justify-center">
-                      <Clock className="w-4 h-4 mr-1" />
-                      {formatMatchDateTime(match.match_date, match.match_time)}
-                    </div>
-
-                    <div className="sm:col-span-6 space-y-1">
-                      <div className="text-sm sm:text-base font-medium text-white">
-                        {match.home_team} vs {match.away_team}
-                      </div>
-                      {match.venue && (
-                        <div className="text-xs sm:text-sm text-gray-400 flex items-center">
-                          <MapPin className="w-3 h-3 mr-1" />
-                          {match.venue}
+                {groupedMatches[date].map((match) => {
+                  const odds = formatOdds(match.odds_home, match.odds_draw, match.odds_away)
+                  return (
+                    <div key={match.id} className="p-4 hover:bg-gray-800 transition">
+                      <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+                        <div className="sm:col-span-2 text-xs sm:text-sm font-medium text-white flex items-center sm:justify-center">
+                          <Clock className="w-4 h-4 mr-1" />
+                          {formatMatchDateTime(match.match_date)}
                         </div>
-                      )}
-                    </div>
 
-                    <div className="sm:col-span-3 text-right sm:text-left space-y-1">
-                      <div className="text-sm sm:text-base font-medium text-white">
-                        <Trophy className="inline w-4 h-4 mr-1" />
-                        {match.league_name}
-                      </div>
-                      <div className="text-xs sm:text-sm text-gray-400">
-                        {match.country} • {match.league_code}
-                      </div>
-                    </div>
+                        <div className="sm:col-span-5 space-y-1">
+                          <div className="text-sm sm:text-base font-medium text-white">
+                            {match.home_team} vs {match.away_team}
+                          </div>
+                          {match.venue && (
+                            <div className="text-xs sm:text-sm text-gray-400 flex items-center">
+                              <MapPin className="w-3 h-3 mr-1" />
+                              {match.venue}
+                            </div>
+                          )}
+                          {odds && (
+                            <div className="text-xs text-gray-400 flex items-center gap-4">
+                              <span>H: {odds.home}</span>
+                              <span>D: {odds.draw}</span>
+                              <span>A: {odds.away}</span>
+                            </div>
+                          )}
+                        </div>
 
-                    <div className="sm:col-span-1 flex flex-col items-end sm:items-center justify-between space-y-2">
-                      <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                        {match.status}
-                      </span>
-                      <Link href={`/matches/${match.id}`} passHref>
-                        <Button className="w-full flex items-center bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold shadow-lg group-hover:shadow-xl transition-all">
-                          View Details
-                        </Button>
-                      </Link>
+                        <div className="sm:col-span-3 text-right sm:text-left space-y-1">
+                          <div className="text-sm sm:text-base font-medium text-white">
+                            <Trophy className="inline w-4 h-4 mr-1" />
+                            {match.league_name}
+                          </div>
+                          <div className="text-xs sm:text-sm text-gray-400">
+                            {match.country} • {match.league_code}
+                          </div>
+                        </div>
+
+                        <div className="flex-shrink-0">
+                          <Link href={`/matches/${match.id}`} className="block w-full sm:w-auto">
+                            <Button
+                              className="w-full sm:w-auto min-w-[120px] bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-200 text-sm group"
+                              size="sm"
+                            >
+                              <Eye className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                              View Details
+                              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           ))}
-
         {matches.length === 0 && (
           <div className="text-center py-12 text-gray-400 text-sm">
             No matches scheduled for the next 7 days
