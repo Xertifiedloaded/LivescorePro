@@ -205,32 +205,9 @@ export default function RegisterPage() {
                   </div>
 
 
-                  <div className="flex items-start space-x-3 pt-2">
-                    <input
-                      id="terms"
-                      type="checkbox"
-                      className="w-4 h-4 mt-0.5 text-primary border-gray-300 rounded focus:ring-primary focus:ring-2 focus:ring-offset-0"
-                      required
-                    />
-                    <Label htmlFor="terms" className="text-xs text-gray-600 leading-5 flex-1">
-                      I agree to the{" "}
-                      <Link 
-                        href="/terms" 
-                        className="text-primary hover:underline font-medium focus:outline-none focus:underline"
-                      >
-                        Terms of Service
-                      </Link>{" "}
-                      and{" "}
-                      <Link 
-                        href="/privacy" 
-                        className="text-primary hover:underline font-medium focus:outline-none focus:underline"
-                      >
-                        Privacy Policy
-                      </Link>
-                    </Label>
-                  </div>
 
-                  {/* Submit Button - mobile-optimized */}
+
+      
                   <Button
                     type="submit"
                     className="w-full bg-primary hover:bg-primary/90 h-12 sm:h-13 text-base sm:text-lg font-semibold mt-6 sm:mt-8 transition-all duration-200 focus:ring-2 focus:ring-primary focus:ring-offset-2"
