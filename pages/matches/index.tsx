@@ -1,25 +1,24 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { matchesApi } from '@/lib/api'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Calendar, Search, Filter, Loader2 } from 'lucide-react'
-import { MatchCard } from '@/components/matches/MatchCard'
-import type { Match, League } from '@/types/matches'
+import { useState, useEffect } from "react"
+import { useQuery } from "@tanstack/react-query"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { matchesApi } from "@/lib/api"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Calendar, Search, Filter, Loader2 } from "lucide-react"
+import { MatchCard } from "@/components/matches/MatchCard"
+import type { Match, League } from "@/types/matches"
 
 export default function MatchesPage() {
   const router = useRouter()
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState("")
 
-  const league =
-    router.query.league === undefined ? 'Premier League' : (router.query.league as string) || ''
-  const status = (router.query.status as string) || 'SCHEDULED'
+  const league = router.query.league === undefined ? "Premier League" : (router.query.league as string) || ""
+  const status = (router.query.status as string) || "SCHEDULED"
   const limit = 20
-  const offset = Number.parseInt((router.query.offset as string) || '0')
+  const offset = Number.parseInt((router.query.offset as string) || "0")
 
   useEffect(() => {
     if (!router.isReady) return
@@ -28,16 +27,16 @@ export default function MatchesPage() {
       router.push(
         {
           pathname: router.pathname,
-          query: { ...router.query, league: 'Premier League' },
+          query: { ...router.query, league: "Premier League" },
         },
         undefined,
-        { shallow: true }
+        { shallow: true },
       )
     }
   }, [router.isReady])
 
   const { data: matchesData, isLoading } = useQuery({
-    queryKey: ['matches', league, status, offset],
+    queryKey: ["matches", league, status, offset],
     queryFn: () =>
       matchesApi.getMatches({
         league,
@@ -48,7 +47,7 @@ export default function MatchesPage() {
   })
 
   const { data: leaguesData } = useQuery({
-    queryKey: ['leagues'],
+    queryKey: ["leagues"],
     queryFn: () => matchesApi.getLeagues(),
   })
 
@@ -71,15 +70,16 @@ export default function MatchesPage() {
   const filteredMatches: Match[] =
     matchesData?.data?.matches?.filter(
       (match: Match) =>
-        searchTerm === '' ||
+        searchTerm === "" ||
         match.home_team.toLowerCase().includes(searchTerm.toLowerCase()) ||
         match.away_team.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        match.league_name?.toLowerCase().includes(searchTerm.toLowerCase())
+        match.league_name?.toLowerCase().includes(searchTerm.toLowerCase()),
     ) || []
+
   const groupedMatches =
-    league === ''
+    league === ""
       ? filteredMatches.reduce((groups: { [key: string]: { [key: string]: Match[] } }, match) => {
-          const leagueName = match.league_name || 'Unknown League'
+          const leagueName = match.league_name || "Unknown League"
           const matchDate = new Date(match.match_date).toDateString()
 
           if (!groups[leagueName]) {
@@ -94,82 +94,58 @@ export default function MatchesPage() {
       : null
 
   const renderMatches = () => {
-    if (league === '' && groupedMatches) {
+    if (league === "" && groupedMatches) {
+      // Show matches grouped by league and then by date
       return (
         <div className="space-y-10">
           {Object.entries(groupedMatches)
             .sort(([leagueA], [leagueB]) => {
-              if (leagueA === 'Premier League') return -1
-              if (leagueB === 'Premier League') return 1
+              // Show Premier League first
+              if (leagueA === "Premier League") return -1
+              if (leagueB === "Premier League") return 1
+              // Keep other leagues in alphabetical order
               return leagueA.localeCompare(leagueB)
             })
             .map(([leagueName, dateGroups]) => {
               const totalMatches = Object.values(dateGroups).flat().length
               return (
                 <div key={leagueName} className="space-y-6">
-                  <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 pb-3 border-b-2 border-primary/20">
-                    <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 truncate">
-                      {leagueName}
-                    </h2>
-
-                    <Button className="bg-primary/10 text-primary px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
-                      <span className="inline sm:hidden">
-                        {totalMatches} {totalMatches === 1 ? 'game' : 'games'}
-                      </span>
-                      <span className="hidden text sm:inline">
-                        {totalMatches} {totalMatches === 1 ? 'match' : 'matches'}
-                      </span>
-                    </Button>
+                  <div className="flex items-center gap-3 pb-3 border-b-2 border-primary/20">
+                    <h2 className="text-2xl font-bold text-gray-900">{leagueName}</h2>
+                    <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                      {totalMatches} {totalMatches === 1 ? "match" : "matches"}
+                    </span>
                   </div>
 
                   <div className="space-y-6">
                     {Object.entries(dateGroups)
-                      .sort(
-                        ([dateA], [dateB]) => new Date(dateA).getTime() - new Date(dateB).getTime()
-                      )
+                      .sort(([dateA], [dateB]) => new Date(dateA).getTime() - new Date(dateB).getTime())
                       .map(([dateString, matches]) => {
                         const date = new Date(dateString)
                         const isToday = date.toDateString() === new Date().toDateString()
-                        const isTomorrow =
-                          date.toDateString() === new Date(Date.now() + 86400000).toDateString()
+                        const isTomorrow = date.toDateString() === new Date(Date.now() + 86400000).toDateString()
 
                         let displayDate = dateString
-                        if (isToday) displayDate = 'Today'
-                        else if (isTomorrow) displayDate = 'Tomorrow'
+                        if (isToday) displayDate = "Today"
+                        else if (isTomorrow) displayDate = "Tomorrow"
                         else
-                          displayDate = date.toLocaleDateString('en-US', {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
+                          displayDate = date.toLocaleDateString("en-US", {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
                           })
 
                         return (
                           <div key={dateString} className="space-y-3">
-                            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                            <div className="flex items-center gap-2">
                               <Calendar className="h-4 w-4 text-gray-500" />
+                              <h3 className="text-lg font-semibold text-gray-800">{displayDate}</h3>
 
-                              <h3 className="text-base sm:text-lg font-semibold text-gray-800 truncate">
-                                {displayDate}
-                              </h3>
-
-                              <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs sm:text-sm font-medium">
-                                <span className="inline sm:hidden">
-                                  {matches.length} {matches.length === 1 ? 'game' : 'games'}
-                                </span>
-                                <span className="hidden sm:inline">
-                                  {matches.length} {matches.length === 1 ? 'match' : 'matches'}
-                                </span>
-                              </span>
                             </div>
-
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ml-6">
                               {matches
-                                .sort(
-                                  (a, b) =>
-                                    new Date(a.match_date).getTime() -
-                                    new Date(b.match_date).getTime()
-                                )
+                                .sort((a, b) => new Date(a.match_date).getTime() - new Date(b.match_date).getTime())
                                 .map((match: Match) => (
                                   // @ts-ignore
                                   <MatchCard key={match.id} match={match} />
@@ -185,18 +161,16 @@ export default function MatchesPage() {
         </div>
       )
     } else {
-      if (league !== '') {
-        const matchesByDate = filteredMatches.reduce(
-          (groups: { [key: string]: Match[] }, match) => {
-            const matchDate = new Date(match.match_date).toDateString()
-            if (!groups[matchDate]) {
-              groups[matchDate] = []
-            }
-            groups[matchDate].push(match)
-            return groups
-          },
-          {}
-        )
+
+      if (league !== "") {
+        const matchesByDate = filteredMatches.reduce((groups: { [key: string]: Match[] }, match) => {
+          const matchDate = new Date(match.match_date).toDateString()
+          if (!groups[matchDate]) {
+            groups[matchDate] = []
+          }
+          groups[matchDate].push(match)
+          return groups
+        }, {})
 
         return (
           <div className="space-y-8">
@@ -205,35 +179,31 @@ export default function MatchesPage() {
               .map(([dateString, matches]) => {
                 const date = new Date(dateString)
                 const isToday = date.toDateString() === new Date().toDateString()
-                const isTomorrow =
-                  date.toDateString() === new Date(Date.now() + 86400000).toDateString()
+                const isTomorrow = date.toDateString() === new Date(Date.now() + 86400000).toDateString()
 
                 let displayDate = dateString
-                if (isToday) displayDate = 'Today'
-                else if (isTomorrow) displayDate = 'Tomorrow'
+                if (isToday) displayDate = "Today"
+                else if (isTomorrow) displayDate = "Tomorrow"
                 else
-                  displayDate = date.toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
+                  displayDate = date.toLocaleDateString("en-US", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
                   })
 
                 return (
                   <div key={dateString} className="space-y-4">
                     <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
                       <Calendar className="h-5 w-5 text-gray-500" />
-                      <h2 className="text-xl font-semibold text-gray-900">{displayDate}</h2>
-                      <span className="bg-primary/10 text-primary px-2 py-1 rounded-full text-sm font-medium">
-                        {matches.length} {matches.length === 1 ? 'match' : 'matches'}
+                      <h2 className="text-base font-semibold text-gray-900">{displayDate}</h2>
+                      <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium">
+                        {matches.length} {matches.length === 1 ? "match" : "matches"}
                       </span>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {matches
-                        .sort(
-                          (a, b) =>
-                            new Date(a.match_date).getTime() - new Date(b.match_date).getTime()
-                        )
+                        .sort((a, b) => new Date(a.match_date).getTime() - new Date(b.match_date).getTime())
                         .map((match: Match) => (
                           // @ts-ignore
                           <MatchCard key={match.id} match={match} />
@@ -262,12 +232,8 @@ export default function MatchesPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">
-              Football Matches
-            </h1>
-            <p className="text-sm sm:text-base text-gray-600">
-              Live scores, fixtures, and betting odds
-            </p>
+            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">Football Matches</h1>
+            <p className="text-sm sm:text-base text-gray-600">Live scores, fixtures, and betting odds</p>
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             {isLoading && (
@@ -303,7 +269,7 @@ export default function MatchesPage() {
               </div>
               <select
                 value={status}
-                onChange={(e) => handleFilterChange('status', e.target.value)}
+                onChange={(e) => handleFilterChange("status", e.target.value)}
                 className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 <option value="SCHEDULED">Scheduled</option>
@@ -313,7 +279,7 @@ export default function MatchesPage() {
               </select>
               <select
                 value={league}
-                onChange={(e) => handleFilterChange('league', e.target.value)}
+                onChange={(e) => handleFilterChange("league", e.target.value)}
                 className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 <option value="">All Leagues</option>
@@ -327,7 +293,7 @@ export default function MatchesPage() {
                 variant="outline"
                 onClick={() => {
                   router.push({ pathname: router.pathname })
-                  setSearchTerm('')
+                  setSearchTerm("")
                 }}
                 className="flex items-center gap-2"
               >
@@ -360,9 +326,9 @@ export default function MatchesPage() {
                     onClick={() => {
                       router.push({
                         pathname: router.pathname,
-                        query: { league: 'Premier League' },
+                        query: { league: "Premier League" },
                       })
-                      setSearchTerm('')
+                      setSearchTerm("")
                     }}
                   >
                     Clear All Filters
